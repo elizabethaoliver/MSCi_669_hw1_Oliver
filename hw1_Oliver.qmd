@@ -1,0 +1,80 @@
+---
+title: "ARA 669 - Assignment 1"
+author: "Elizabeth Oliver"
+date: "9/2/2026"
+output: html_document
+---
+
+## Assignment
+
+This first assignment is designed to ease you into the course, and to introduce GitHub and Quarto to those of you not familiar with the programs. It's also an opportunity for me to gauge a little more formally where everyone is in terms of coding styles and experiences. 
+
+Please submit this assignment via GitHub by Sept. 3 at 5 pm.
+
+## Getting started
+
+Use the code chunk below to load the tidyverse package \[0.5 pt\].
+
+```{r setup}
+#| message: false
+#| error: false
+installed.packages("tidyverse")
+library(tidyverse)
+```
+## Data exploration
+Several well-behaved datasets are preloaded into R and are frequently used to demonstrate statistical concepts. Use the function data() to retrieve a list available datasets and pick one to explore for this assignment.
+
+```{r explore}
+#| message: false
+#| error: false
+data()
+data("warpbreaks")
+colnames(warpbreaks) #headers are breaks, wool, and tension
+str(warpbreaks)
+summary(warpbreaks)
+pairs(warpbreaks)
+```
+Describe the context of the dataset and the structure of the data themselves \[1 pt\].
+This data includes the height and weight of 15 women 
+
+The "warpbreaks" dataset includes number of breaks in yarn, wool type A and B, and tension L,M, or H for 54 observations. 
+
+## Plotting
+Explore the data visually using ggplot2 \[1 pt\].
+
+```{r plotting}
+#| message: false
+#| error: false
+
+installs.packages(dplyr)
+library(dplyr)
+
+ggplot(warpbreaks, aes(x = tension, y = breaks, color = wool))+ 
+  geom_point()+
+  theme_minimal()
+
+ggplot(warpbreaks, aes(x = wool, y = breaks))+
+  geom_point()+
+  theme_minimal()
+
+```
+Describe your approach. What choices did you make in deciding which variables to use, plot types, etc., and why? [1 pt].
+
+This being a smaller dataset with having only three columns there was not too much editing needed to make the dataset usable for graphs so I made not changes there. My first thought was I wonder how the tension as a response variable affects the number of breaks for each wool type. Thus, I created a ggplot where x = tension and y = breaks and gave different colors for the two wool types. Next was curious is the wool type showed any affect on frequency of breaks during weaving. I did simple scatter plots but i think graph two could also be shown with a bar graph quite easily. 
+
+Read the perspectives article “Should we still teach or learn coding? A postgraduate student perspective on the use of large language models for coding in ecology & evolution” (Campbell et al. 2024). What part(s) of this article resonated with you, and why [1.5 pts]? 
+
+As I consider myself a beginner in coding, I find myself enticed to resort to LLM's when I immediatley fail but I think in the beginning that really hurt my learning and understanding of the code that I was creating. After now learning more steamlined ways to code from others (peers, PI's, classes, etc.) I have found that LLM's don't always give you the best or most straight forward code and will often have you jump through a ton of loop holes to get to the end result. Plus, I have found it more rewarding to solve the problem myself. I think this is what the authors end message was getting at. learning the process of coding has made more confident in the science I am producing even if I am still at that beginner stage, becuase I understand each line of code that I wrote not just something I copied from an LLM. 
+
+## AI statement
+
+Describe your use of AI in this assignment, including:
+
+1.  What tool or service did you use? I tried to Google search for a specific function and Google AI also comes up automatically with code somtimes.  
+
+2.  What was the specific purpose or use? 
+
+I did not use AI for this assignment except for trying to search for the name of the pairs() function I wanted to use to quickly look at the data, as I searched on google and it automatically uses google AI now. i did not even find it through google and just looked through my old code to find it.
+
+3.  How did this use enhance your understanding of the topic/code? Google was unhelpful in finding the right function I was looking for. More like, I probably just was not specific enough in my Google search, my old code was more helpful for reminding me the name of the function I needed. 
+
