@@ -1,0 +1,138 @@
+---
+title: "ARA 669 - Assignment 2"
+author: "Your name here"
+date: "today's date here"
+output: html_document
+---
+
+## Overview
+
+The goal of this assignment is to apply the tools and approaches we've learned during lab to explore data from a study of periwinkle snail (*Littoraria irrorata*) association with big cordgrass (*Spartina cynosuroides*) and smooth cordgrass (*Spartina alterniflora*) in a salt marsh in Taskinas Creek, a tributary of the York River. The dataset includes the following variables:
+
+obs: Observation number
+quad: Quadrat number
+plantType: SPAL = *Spartina alterniflora*; SPCY = *Spartina cynosuroides*
+liveStems: Number of live stems
+deadStems: Number of dead stems
+burrows: Fiddler crab burrows greater than one centimeter
+mussels: Ribbed mussels (*Guekensia demissa*)
+snails: Periwinkle snails (*Littoraria irrorata*)
+snailDensity: Snail Density
+notes: any notes about the observation
+
+Please submit this assignment via GitHub by 24 September.  
+
+## Getting started
+
+**Use the code chunk below to load packages and the data. \[0.5 pt\]**
+
+```{r setup}
+#| message: false
+#| error: false
+
+# Paste your code in here!
+
+```
+
+## Data exploration
+
+**Explore the data visually using ggplot2. \[0.5 pt\]**
+
+```{r plotting}
+#| message: false
+#| error: false
+
+# Paste your code in here!
+
+```
+
+**Describe your approach. What choices did you make in deciding which variables to use, plot types, etc., and why? \[1 pt\]**
+
+## Research question
+
+**Based on the data description above and your visualizations, formulate research questions and testable hypotheses that could be answered by applying linear models to the data provided. \[1 pt\]**
+
+## Analysis
+
+**Develop a set of models (3+) that reflect the hypotheses described above. \[1 pt\]**
+
+```{r models}
+#| message: false
+#| error: false
+
+# Paste your code in here!
+
+```
+
+**Evaluate your models using an approach covered as part of this class. \[1 pt\]**
+
+```{r modelselection}
+#| message: false
+#| error: false
+
+# Paste your code in here!
+
+```
+
+**Check your model diagnostics (i.e., are the model assumptions met) using an approach covered as part of this class. \[1 pt\]**
+
+```{r diagnostics}
+#| message: false
+#| error: false
+
+# Paste your code in here!
+
+```
+
+**Provide parameter estimates and SEs for the most supported model and plot the fitted model over observed data. \[2 pts\]**
+
+## Conclusions
+
+**Provide summary statements about the quality of your analysis, including any potential limitations or caveats. \[1 pt\]**
+
+## AI statement
+
+*If you used AI for this assignment, please describe your use, including:*
+
+*1.  What tool or service did you use?*
+
+*2.  What was the specific purpose or use?*
+
+*3.  How did this use enhance your understanding of the topic/code?*
+
+## Final Project
+
+Each student will complete an independent project using a dataset from their own research whenever possible. Students who do not have an appropriate dataset will be provided with one. **If you do not have a dataset to use for this project, please reach out to Rob & Gina as soon as possible.**
+
+The project is intended to mirror the statistical component of a scientific research study and will require students to integrate concepts learned throughout the course. Project components include: 
+
+- formulation of a research question, objective, and/or testable hypotheses;
+- description of the study design and data with justification of design adequacy;
+- exploratory data analysis;
+- selection and justification of an appropriate modeling approach;
+- model fitting, comparison, selection, and validation;
+- interpretation of results in the context of the research question;
+- preparation of publication-quality figures and tables;
+- a written report in the style of a short scientific paper (approximately 4-6 pages); and
+- a 3-minute lightening talk summarizing the study, analytical approach, results, and conclusions.
+
+Projects will be evaluated on the quality of the scientific question, appropriateness of the statistical methodology, rigor of the analysis, interpretation of results, clarity of written and oral communication, and reproducibility of the analytical workflow.
+
+To support you on this analytical journey, this project has been divided into four steps, which will all contribute to your final project grade (worth 50% of your total grade). 
+
+1. Project proposal, including research question and description of dataset
+2. Exploratory data analysis and proposed analytical approach
+3. Preliminary model fits and diagnostics
+4. Final paper and presentation
+
+## Project proposal
+
+
+**Formulate 1-2 research questions, objectives, and/or testable hypotheses of interest. Provide sufficient detail for someone not familiar with your work to understand the goal(s) of your project. \[2 pts\]**
+
+
+
+**Describe the study design and data, including justification of design adequacy to address the research question, objectives, and/or testable hypotheses described above. Provide sufficient detail to evaluate your data in the context of your questions of interest. \[3 pts\]**
+
+
+
