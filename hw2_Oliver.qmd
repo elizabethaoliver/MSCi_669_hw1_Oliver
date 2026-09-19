@@ -1,0 +1,177 @@
+---
+title: "ARA 669 - Assignment 2"
+author: "Elizabeth Oliver"
+date: "September 19, 2026"
+output: html_document
+---
+
+## Overview
+
+The goal of this assignment is to apply the tools and approaches we've learned during lab to explore data from a study of periwinkle snail (*Littoraria irrorata*) association with big cordgrass (*Spartina cynosuroides*) and smooth cordgrass (*Spartina alterniflora*) in a salt marsh in Taskinas Creek, a tributary of the York River. The dataset includes the following variables:
+
+obs: Observation number
+quad: Quadrat number
+plantType: SPAL = *Spartina alterniflora*; SPCY = *Spartina cynosuroides*
+liveStems: Number of live stems
+deadStems: Number of dead stems
+burrows: Fiddler crab burrows greater than one centimeter
+mussels: Ribbed mussels (*Guekensia demissa*)
+snails: Periwinkle snails (*Littoraria irrorata*)
+snailDensity: Snail Density
+notes: any notes about the observation
+
+Please submit this assignment via GitHub by 24 September.  
+
+## Getting started
+
+**Use the code chunk below to load packages and the data. \[0.5 pt\]**
+
+```{r setup}
+#| message: false
+#| error: false
+
+library(car)
+library(tidyverse)
+
+data <- read.csv('Failon_Plant_Stem_Densities_and_Invertebrate_Survey.csv') #upload csv file
+
+data <- data[,-c(10)]
+
+head(data)
+nrow(data) #60 obs
+summary(data)
+
+str(data)
+data$plantType <- as.factor(data$plantType)
+pairs(data) #quick data exploration before selecting ggplots
+
+```
+
+## Data exploration
+
+**Explore the data visually using ggplot2. \[0.5 pt\]**
+
+```{r plotting}
+#| message: false
+#| error: false
+
+ggplot(data, aes(x = liveStems, y = snailDensity, color = plantType))+ 
+  geom_point()+
+  theme_classic()
+
+ggplot(data, aes(x = burrows, y = snailDensity))+
+  geom_point()+
+  theme_classic()
+
+ggplot(data, aes(x = burrows, y = liveStems))+
+  geom_point()+
+  theme_classic()
+```
+
+**Describe your approach. What choices did you make in deciding which variables to use, plot types, etc., and why? \[1 pt\]**
+
+I selected certain variables based on previous knowledge on S. alterniflora, fiddlers, and L. irrorata. I know that L. irrorata often feed on S. alterniflora and other salt marsh grasses by scraping the plant with their radula to gain algae. Thus I looked at the density of L. irrorata with live stem density for each plant species as this is a potential food source for them. They will also feed through the mud to gain benthic microalagae, which is the same food source as fiddler crabs. So I plotted fiddler crab burrows against the snail density as their may exist some level of competition between the two. Lastly, this does not have to necessarily do with the periwinkle snails, however I know there is typically a nuetral or positive association with smooth coordgrass density to burrow density. So I plotted burrow density to live stems found. 
+
+## Research question
+
+**Based on the data description above and your visualizations, formulate research questions and testable hypotheses that could be answered by applying linear models to the data provided. \[1 pt\]**
+
+H0: I hypothesize that there will be no change in Littorina irrorata density regardless of stem count of either marsh grass species or burrow density. 
+
+Ha: I hypothesize that in regions where there is a low burrow density and high stem count for either species of marsh grass, there will be a higher density of Littorina irrorata. 
+
+## Analysis
+
+**Develop a set of models (3+) that reflect the hypotheses described above. \[1 pt\]**
+
+```{r models}
+#| message: false
+#| error: false
+
+# Paste your code in here!
+
+```
+
+**Evaluate your models using an approach covered as part of this class. \[1 pt\]**
+
+```{r modelselection}
+#| message: false
+#| error: false
+
+# Paste your code in here!
+
+```
+
+**Check your model diagnostics (i.e., are the model assumptions met) using an approach covered as part of this class. \[1 pt\]**
+
+```{r diagnostics}
+#| message: false
+#| error: false
+
+# Paste your code in here!
+
+```
+
+**Provide parameter estimates and SEs for the most supported model and plot the fitted model over observed data. \[2 pts\]**
+
+## Conclusions
+
+**Provide summary statements about the quality of your analysis, including any potential limitations or caveats. \[1 pt\]**
+
+## AI statement
+
+*If you used AI for this assignment, please describe your use, including:*
+
+*1.  What tool or service did you use?*
+
+*2.  What was the specific purpose or use?*
+
+*3.  How did this use enhance your understanding of the topic/code?*
+
+## Final Project
+
+Each student will complete an independent project using a dataset from their own research whenever possible. Students who do not have an appropriate dataset will be provided with one. **If you do not have a dataset to use for this project, please reach out to Rob & Gina as soon as possible.**
+
+The project is intended to mirror the statistical component of a scientific research study and will require students to integrate concepts learned throughout the course. Project components include: 
+
+- formulation of a research question, objective, and/or testable hypotheses;
+- description of the study design and data with justification of design adequacy;
+- exploratory data analysis;
+- selection and justification of an appropriate modeling approach;
+- model fitting, comparison, selection, and validation;
+- interpretation of results in the context of the research question;
+- preparation of publication-quality figures and tables;
+- a written report in the style of a short scientific paper (approximately 4-6 pages); and
+- a 3-minute lightening talk summarizing the study, analytical approach, results, and conclusions.
+
+Projects will be evaluated on the quality of the scientific question, appropriateness of the statistical methodology, rigor of the analysis, interpretation of results, clarity of written and oral communication, and reproducibility of the analytical workflow.
+
+To support you on this analytical journey, this project has been divided into four steps, which will all contribute to your final project grade (worth 50% of your total grade). 
+
+1. Project proposal, including research question and description of dataset
+2. Exploratory data analysis and proposed analytical approach
+3. Preliminary model fits and diagnostics
+4. Final paper and presentation
+
+## Project proposal
+
+
+**Formulate 1-2 research questions, objectives, and/or testable hypotheses of interest. Provide sufficient detail for someone not familiar with your work to understand the goal(s) of your project. \[2 pts\]**
+
+Questions: 
+1. How does the colonization of Minuca pugnax into non-native habitats, the mud fiddler crab impact marsh stability; defined by soil strength as a proxy for erosion potential and vertical accretion of sediment?
+
+2. Can the mussel, Guekensia demissa, offset the predicted negative effects of bioturbation of M. pugnax on marsh stability?
+
+Hypotheses:
+1. I predict that the bioturbative effects of M. pugnax will decrease soil strength and vertical sediment accretion. Bioturbation from the fiddler crabs will reduce belowground biomass, bulk density, and aboveground biomass contributing to a reduction in root/plant-mediated sediment trapping. 
+
+2. There are known positive effect mussels can have on plant biomass and sediment accretion in salt marshes, I hypothesize they will offset the predictive negative effects of M. pugnax for soil strength, sediment accretion and known negative effects on Spartina alterniflora aboveground biomass. Their presence can act as a mediator for sediment trapping, replacing lost sediment trapping from salt marsh grass reduction and increase soil strength through the presence of their byssal threads. 
+
+
+**Describe the study design and data, including justification of design adequacy to address the research question, objectives, and/or testable hypotheses described above. Provide sufficient detail to evaluate your data in the context of your questions of interest. \[3 pts\]**
+
+This study was conducted in Plum Island, Massachusetts where the fiddler crab M. pugnax is the only burrowing species > 0.5 cm that live on the marsh platform. They are non-native here. I completed a 3-month caging study with 5 treatments: control, reference plot, crab only, mussel only, crab and mussel plot. The study was completed in a randomized block design with 8 replicates. The number of replicates were determined by using similar studies data to complete a power analysis. The reference plots were the only "cages" that only had the posts and no mesh to determine if the cages themselves had an effect on the outcome of the results. For the crab and mussel only plots, this was to identify the individual impact each species would have on the variables that I am testing. The crab and mussel treatment is to see the cumulative effects of them interacting with another and the variables. This study has a third question for my thesis but data for that will not be processed by the time this dataset is needed for class (percent carbon storage in plant biomass and marsh sediment). 
+
+However data that has been collected and processed for this data set includes: soil strength at 10 cm increments to 50 cm in depth taken by a shear vane (kPa), elevation (RTK), vertical deposition which is measured by mineral mass of sediment over area over time, above ground biomass dry weight, stem count and stem height. I have stem count data for the start and the end of the experiment. The only additional data that may be added to this data set (hopefully if I can get it processed in time) is bulk density and belowground biomass. I am unsure if I will get these parameters done in time, but I think that my question can be answered even if I do not finish processing these parameters in time. I also have known burrow and mussel density as well as a ~10% sub sample of mussel height (cm) and crab carapace width (cm) and sex for the organisms that were placed in these cages. Even without having bulk density and belowground biomass data processed, soil strength can answer how the different treatments have impacted erosion potential of the marsh, those parameters are more or less covariates that can help further explain the mechanism that is reducing soil strength. 
+
