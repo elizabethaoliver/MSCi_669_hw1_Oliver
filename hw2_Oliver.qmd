@@ -66,19 +66,30 @@ ggplot(data, aes(x = burrows, y = snailDensity))+
 ggplot(data, aes(x = burrows, y = liveStems))+
   geom_point()+
   theme_classic()
+
+ggplot(data, aes(x = mussels, y = snailDensity, color = plantType))+
+  geom_point()+
+  theme_classic()# doesn't really feel you much I don't think
+
 ```
 
 **Describe your approach. What choices did you make in deciding which variables to use, plot types, etc., and why? \[1 pt\]**
 
-I selected certain variables based on previous knowledge on S. alterniflora, fiddlers, and L. irrorata. I know that L. irrorata often feed on S. alterniflora and other salt marsh grasses by scraping the plant with their radula to gain algae. Thus I looked at the density of L. irrorata with live stem density for each plant species as this is a potential food source for them. They will also feed through the mud to gain benthic microalagae, which is the same food source as fiddler crabs. So I plotted fiddler crab burrows against the snail density as their may exist some level of competition between the two. Lastly, this does not have to necessarily do with the periwinkle snails, however I know there is typically a nuetral or positive association with smooth coordgrass density to burrow density. So I plotted burrow density to live stems found. 
+I selected certain variables based on previous knowledge on S. alterniflora, fiddlers, and L. irrorata. I know that L. irrorata often feed on S. alterniflora and other salt marsh grasses by scraping the plant with their radula to gain algae. Thus I looked at the density of L. irrorata with live stem density for each plant species as this is a potential food source for them. They will also feed through the mud to gain benthic microalagae, which is the same food source as fiddler crabs. So I plotted fiddler crab burrows against the snail density as their may exist some level of competition between the two. Lastly, this does not have to necessarily do with the periwinkle snails, however I know there is typically a neutral or positive association with smooth coordgrass density to burrow density. So I plotted burrow density to live stems found. 
 
 ## Research question
 
 **Based on the data description above and your visualizations, formulate research questions and testable hypotheses that could be answered by applying linear models to the data provided. \[1 pt\]**
 
+Q1: How does the presence of burrows impact snail density? 
+
+Q2: How does stem count and plant type affect snail density? 
+
 H0: I hypothesize that there will be no change in Littorina irrorata density regardless of stem count of either marsh grass species or burrow density. 
 
-Ha: I hypothesize that in regions where there is a low burrow density and high stem count for either species of marsh grass, there will be a higher density of Littorina irrorata. 
+H1: I hypothesize that in regions where there is a low burrow density there will be a higher density of Littorina irrorata. 
+
+H2: I predict that high stem count and species of marsh grass will effect snail density. 
 
 ## Analysis
 
@@ -88,7 +99,13 @@ Ha: I hypothesize that in regions where there is a low burrow density and high s
 #| message: false
 #| error: false
 
-# Paste your code in here!
+m1 <- lm(snailDensity ~ burrows, data = data)
+
+m2 <- lm(snailDensity ~ burrows*liveStems, data = data)
+
+m3 <- lm(snailDensity ~ burrows*liveStems*plantType, data = data) #probably will have some multicolinearity
+
+m4 <- lm(snailDensity ~ burrows*plantType, data = data)
 
 ```
 
@@ -98,7 +115,22 @@ Ha: I hypothesize that in regions where there is a low burrow density and high s
 #| message: false
 #| error: false
 
-# Paste your code in here!
+#Check for colinearilty
+GGally::ggpairs(data) #liveStems and plantType are highlight correlated. Burrows with either are fine
+
+#look at VIF for each model with 2 or more terms
+vif(m2) #burrows and burrows:livestems >10. Should be concerned
+
+vif(m3) #VIF is 12-50 for all parameters -> very concerned
+
+vif(m4) #VIF is <5, some correlation but manageable
+
+#Model Comparison using AIC
+
+AIC(m1, m2, m3, m4) %>% 
+  arrange(AIC)
+
+#All AIC values are close within 1 other each other. Based on VIF and AIC m1 and m4 are the best options. I am going to go with m1. 
 
 ```
 
@@ -108,25 +140,55 @@ Ha: I hypothesize that in regions where there is a low burrow density and high s
 #| message: false
 #| error: false
 
-# Paste your code in here!
+library(performance)
+?check_model
+# Use performance::check_model to look at various model assumptions
+
+performance::check_model(m4)# Linearity and Homogeneity of Variance looks very rough
+
+performance::check_model(m1) #Linearity and homogeneity of variance looks better. 
+
+#Normality of residuals tails for both models do deviate from the line
+
+#Choosing m1 for the best model based on performance, VIF, and AIC
+
+summary(m1) #to get parameter estimates and SEs for the model. Do not need to make SE inflated due to only using one variable in the model. 
+
+#Fitted model over observed data
+
+ggplot(data, aes(y = snailDensity, x = burrows))+ 
+  geom_point()+
+  geom_smooth(method = "lm", formula = y ~ x, se = TRUE, color = "deeppink4")+
+  labs(
+    x = "Burrow Density ",
+    y = "Snail Density"
+  )+
+  theme_classic()
 
 ```
 
-**Provide parameter estimates and SEs for the most supported model and plot the fitted model over observed data. \[2 pts\]**
+** Provide parameter estimates and SEs for a model for the most supported model and plot the fitted model over observed data. \[2 pts\]**
+
+Y = (-14.089)x + 194.792
+SE = 5.051
+R^2 = 0.1183
 
 ## Conclusions
 
 **Provide summary statements about the quality of your analysis, including any potential limitations or caveats. \[1 pt\]**
+Even though I am using only one variable as a predictor of the model, looking at information like VIF which caused the removal of looking at burrows and live stems as the VIF was high. Thus, I choose burrows as the variable to continue with. While grass type and burrows did not produce a high VIF, the AIC was higher when compared to the model with just burrows and the linearity and homogeneity graphs when looking at the performance trailed off. Thus, I choose m1 over all other models made. Limitations of this model is that it only has one variable and it does not predict snail density well. However, when looking at other variables like mussels in the exploratory page and evaluations from other models, this lead to me choosing burrows as the one variable. This model is limited as burrow data towards the tails are limited and is not describing the system that predicts snail density well. 
 
 ## AI statement
 
 *If you used AI for this assignment, please describe your use, including:*
 
-*1.  What tool or service did you use?*
+*1.  What tool or service did you use?* google/stack overflow
 
 *2.  What was the specific purpose or use?*
+When looking at the GGally::ggpairs function I could not figure out using ?ggpairs how to determine which corr related to the x and y so I looked at stack overflow and examples provided by google to explain which diagonal corresponds to the correct corr for each variable. 
 
 *3.  How did this use enhance your understanding of the topic/code?*
+It helped me understand how to digest the ggpairs function better. I feel that it can be hard to digest at first and understand which graph pairs with which x and y at first. 
 
 ## Final Project
 

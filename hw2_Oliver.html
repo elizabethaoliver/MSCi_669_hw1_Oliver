@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Elizabeth Oliver">
+<meta name="dcterms.date" content="2026-09-19">
+
+<title>ARA 669 - Assignment 2</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="hw2_Oliver_files/libs/clipboard/clipboard.min.js"></script>
+<script src="hw2_Oliver_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="hw2_Oliver_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="hw2_Oliver_files/libs/quarto-html/popper.min.js"></script>
+<script src="hw2_Oliver_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="hw2_Oliver_files/libs/quarto-html/anchor.min.js"></script>
+<link href="hw2_Oliver_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="hw2_Oliver_files/libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="hw2_Oliver_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="hw2_Oliver_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="hw2_Oliver_files/libs/bootstrap/bootstrap-215b371544c282197b31c8aa00ce3677.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">ARA 669 - Assignment 2</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Elizabeth Oliver </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 19, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="overview" class="level2">
+<h2 class="anchored" data-anchor-id="overview">Overview</h2>
+<p>The goal of this assignment is to apply the tools and approaches we’ve learned during lab to explore data from a study of periwinkle snail (<em>Littoraria irrorata</em>) association with big cordgrass (<em>Spartina cynosuroides</em>) and smooth cordgrass (<em>Spartina alterniflora</em>) in a salt marsh in Taskinas Creek, a tributary of the York River. The dataset includes the following variables:</p>
+<p>obs: Observation number quad: Quadrat number plantType: SPAL = <em>Spartina alterniflora</em>; SPCY = <em>Spartina cynosuroides</em> liveStems: Number of live stems deadStems: Number of dead stems burrows: Fiddler crab burrows greater than one centimeter mussels: Ribbed mussels (<em>Guekensia demissa</em>) snails: Periwinkle snails (<em>Littoraria irrorata</em>) snailDensity: Snail Density notes: any notes about the observation</p>
+<p>Please submit this assignment via GitHub by 24 September.</p>
+</section>
+<section id="getting-started" class="level2">
+<h2 class="anchored" data-anchor-id="getting-started">Getting started</h2>
+<p><strong>Use the code chunk below to load packages and the data. [0.5 pt]</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'Failon_Plant_Stem_Densities_and_Invertebrate_Survey.csv'</span>) <span class="co">#upload csv file</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data[,<span class="sc">-</span><span class="fu">c</span>(<span class="dv">10</span>)]</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  obs quad plantType liveStems deadStems burrows mussels snails snailDensity
+1   1    1      SPAL        12         1       0       0     10          160
+2   2    2      SPAL        14         0       1       0      6           96
+3   3    3      SPAL        17         0       1       0     24          384
+4   4    4      SPAL        21         1       0       0     17          272
+5   5    5      SPAL        13         0       1       0     15          240
+6   6    6      SPAL        21         0       1       0      8          128</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(data) <span class="co">#60 obs</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 60</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      obs             quad           plantType    liveStems       deadStems    
+ Min.   : 1.00   Min.   : 1.00   Length   :60   Min.   : 3.00   Min.   :0.000  
+ 1st Qu.:15.75   1st Qu.:15.75   N.unique : 2   1st Qu.: 8.00   1st Qu.:1.000  
+ Median :30.50   Median :30.50   N.blank  : 0   Median :12.00   Median :3.000  
+ Mean   :30.50   Mean   :30.50   Min.nchar: 4   Mean   :12.48   Mean   :3.233  
+ 3rd Qu.:45.25   3rd Qu.:45.25   Max.nchar: 4   3rd Qu.:17.00   3rd Qu.:4.000  
+ Max.   :60.00   Max.   :60.00                  Max.   :27.00   Max.   :9.000  
+    burrows         mussels           snails       snailDensity  
+ Min.   :0.000   Min.   :0.0000   Min.   : 0.00   Min.   :  0.0  
+ 1st Qu.:1.000   1st Qu.:0.0000   1st Qu.: 6.00   1st Qu.: 96.0  
+ Median :2.000   Median :0.0000   Median : 9.50   Median :152.0  
+ Mean   :2.167   Mean   :0.1667   Mean   :10.27   Mean   :164.3  
+ 3rd Qu.:3.000   3rd Qu.:0.0000   3rd Qu.:13.00   3rd Qu.:208.0  
+ Max.   :8.000   Max.   :4.0000   Max.   :24.00   Max.   :384.0  </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   60 obs. of  9 variables:
+ $ obs         : int  1 2 3 4 5 6 7 8 9 10 ...
+ $ quad        : int  1 2 3 4 5 6 7 8 9 10 ...
+ $ plantType   : chr  "SPAL" "SPAL" "SPAL" "SPAL" ...
+ $ liveStems   : int  12 14 17 21 13 21 18 22 15 12 ...
+ $ deadStems   : int  1 0 0 1 0 0 1 2 4 1 ...
+ $ burrows     : int  0 1 1 0 1 1 2 1 0 1 ...
+ $ mussels     : int  0 0 0 0 0 0 1 0 0 0 ...
+ $ snails      : int  10 6 24 17 15 8 14 22 13 16 ...
+ $ snailDensity: int  160 96 384 272 240 128 224 352 208 256 ...</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>plantType <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data<span class="sc">$</span>plantType)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pairs</span>(data) <span class="co">#quick data exploration before selecting ggplots</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw2_Oliver_files/figure-html/setup-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="data-exploration" class="level2">
+<h2 class="anchored" data-anchor-id="data-exploration">Data exploration</h2>
+<p><strong>Explore the data visually using ggplot2. [0.5 pt]</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> liveStems, <span class="at">y =</span> snailDensity, <span class="at">color =</span> plantType))<span class="sc">+</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw2_Oliver_files/figure-html/plotting-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> burrows, <span class="at">y =</span> snailDensity))<span class="sc">+</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw2_Oliver_files/figure-html/plotting-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> burrows, <span class="at">y =</span> liveStems))<span class="sc">+</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw2_Oliver_files/figure-html/plotting-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> mussels, <span class="at">y =</span> snailDensity, <span class="at">color =</span> plantType))<span class="sc">+</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()<span class="co"># doesn't really feel you much I don't think</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw2_Oliver_files/figure-html/plotting-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Describe your approach. What choices did you make in deciding which variables to use, plot types, etc., and why? [1 pt]</strong></p>
+<p>I selected certain variables based on previous knowledge on S. alterniflora, fiddlers, and L. irrorata. I know that L. irrorata often feed on S. alterniflora and other salt marsh grasses by scraping the plant with their radula to gain algae. Thus I looked at the density of L. irrorata with live stem density for each plant species as this is a potential food source for them. They will also feed through the mud to gain benthic microalagae, which is the same food source as fiddler crabs. So I plotted fiddler crab burrows against the snail density as their may exist some level of competition between the two. Lastly, this does not have to necessarily do with the periwinkle snails, however I know there is typically a neutral or positive association with smooth coordgrass density to burrow density. So I plotted burrow density to live stems found.</p>
+</section>
+<section id="research-question" class="level2">
+<h2 class="anchored" data-anchor-id="research-question">Research question</h2>
+<p><strong>Based on the data description above and your visualizations, formulate research questions and testable hypotheses that could be answered by applying linear models to the data provided. [1 pt]</strong></p>
+<p>Q1: How does the presence of burrows impact snail density?</p>
+<p>Q2: How does stem count and plant type affect snail density?</p>
+<p>H0: I hypothesize that there will be no change in Littorina irrorata density regardless of stem count of either marsh grass species or burrow density.</p>
+<p>H1: I hypothesize that in regions where there is a low burrow density there will be a higher density of Littorina irrorata.</p>
+<p>H2: I predict that high stem count and species of marsh grass will effect snail density.</p>
+</section>
+<section id="analysis" class="level2">
+<h2 class="anchored" data-anchor-id="analysis">Analysis</h2>
+<p><strong>Develop a set of models (3+) that reflect the hypotheses described above. [1 pt]</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(snailDensity <span class="sc">~</span> burrows, <span class="at">data =</span> data)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(snailDensity <span class="sc">~</span> burrows<span class="sc">*</span>liveStems, <span class="at">data =</span> data)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(snailDensity <span class="sc">~</span> burrows<span class="sc">*</span>liveStems<span class="sc">*</span>plantType, <span class="at">data =</span> data) <span class="co">#probably will have some multicolinearity</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>m4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(snailDensity <span class="sc">~</span> burrows<span class="sc">*</span>plantType, <span class="at">data =</span> data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><strong>Evaluate your models using an approach covered as part of this class. [1 pt]</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Check for colinearilty</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>GGally<span class="sc">::</span><span class="fu">ggpairs</span>(data) <span class="co">#liveStems and plantType are highlight correlated. Burrows with either are fine</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw2_Oliver_files/figure-html/modelselection-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#look at VIF for each model with 2 or more terms</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(m2) <span class="co">#burrows and burrows:livestems &gt;10. Should be concerned</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          burrows         liveStems burrows:liveStems 
+        10.147598          2.929234         13.236452 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(m3) <span class="co">#VIF is 12-50 for all parameters -&gt; very concerned</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    burrows                   liveStems 
+                   44.02787                    12.31289 
+                  plantType           burrows:liveStems 
+                   50.32455                    45.65857 
+          burrows:plantType         liveStems:plantType 
+                   48.10135                    32.27973 
+burrows:liveStems:plantType 
+                   32.89670 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(m4) <span class="co">#VIF is &lt;5, some correlation but manageable</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          burrows         plantType burrows:plantType 
+         1.384501          2.332108          2.499549 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Model Comparison using AIC</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(m1, m2, m3, m4) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(AIC)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   df      AIC
+m1  3 699.4657
+m2  5 701.5026
+m4  5 702.8800
+m3  9 703.5011</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">#All AIC values are close within 1 other each other. Based on VIF and AIC m1 and m4 are the best options. I am going to go with m1. </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><strong>Check your model diagnostics (i.e., are the model assumptions met) using an approach covered as part of this class. [1 pt]</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(performance)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>?check_model</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Use performance::check_model to look at various model assumptions</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>performance<span class="sc">::</span><span class="fu">check_model</span>(m4)<span class="co"># Linearity and Homogeneity of Variance looks very rough</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw2_Oliver_files/figure-html/diagnostics-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>performance<span class="sc">::</span><span class="fu">check_model</span>(m1) <span class="co">#Linearity and homogeneity of variance looks better. </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw2_Oliver_files/figure-html/diagnostics-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Normality of residuals tails for both models do deviate from the line</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Choosing m1 for the best model based on performance, VIF, and AIC</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1) <span class="co">#to get parameter estimates and SEs for the model. Do not need to make SE inflated due to only using one variable in the model. </span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = snailDensity ~ burrows, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-130.79  -56.53  -11.39   55.95  203.30 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  194.792     15.011  12.977  &lt; 2e-16 ***
+burrows      -14.089      5.051  -2.789  0.00713 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 79.59 on 58 degrees of freedom
+Multiple R-squared:  0.1183,    Adjusted R-squared:  0.1031 
+F-statistic: 7.781 on 1 and 58 DF,  p-value: 0.007131</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Fitted model over observed data</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">y =</span> snailDensity, <span class="at">x =</span> burrows))<span class="sc">+</span> </span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">formula =</span> y <span class="sc">~</span> x, <span class="at">se =</span> <span class="cn">TRUE</span>, <span class="at">color =</span> <span class="st">"deeppink4"</span>)<span class="sc">+</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Burrow Density "</span>,</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Snail Density"</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">+</span></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hw2_Oliver_files/figure-html/diagnostics-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>** Provide parameter estimates and SEs for a model for the most supported model and plot the fitted model over observed data. [2 pts]**</p>
+<p>Y = (-14.089)x + 194.792 SE = 5.051 R^2 = 0.1183</p>
+</section>
+<section id="conclusions" class="level2">
+<h2 class="anchored" data-anchor-id="conclusions">Conclusions</h2>
+<p><strong>Provide summary statements about the quality of your analysis, including any potential limitations or caveats. [1 pt]</strong> Even though I am using only one variable as a predictor of the model, looking at information like VIF which caused the removal of looking at burrows and live stems as the VIF was high. Thus, I choose burrows as the variable to continue with. While grass type and burrows did not produce a high VIF, the AIC was higher when compared to the model with just burrows and the linearity and homogeneity graphs when looking at the performance trailed off. Thus, I choose m1 over all other models made. Limitations of this model is that it only has one variable and it does not predict snail density well. However, when looking at other variables like mussels in the exploratory page and evaluations from other models, this lead to me choosing burrows as the one variable. This model is limited as burrow data towards the tails are limited and is not describing the system that predicts snail density well.</p>
+</section>
+<section id="ai-statement" class="level2">
+<h2 class="anchored" data-anchor-id="ai-statement">AI statement</h2>
+<p><em>If you used AI for this assignment, please describe your use, including:</em></p>
+<p><em>1. What tool or service did you use?</em> google/stack overflow</p>
+<p><em>2. What was the specific purpose or use?</em> When looking at the GGally::ggpairs function I could not figure out using ?ggpairs how to determine which corr related to the x and y so I looked at stack overflow and examples provided by google to explain which diagonal corresponds to the correct corr for each variable.</p>
+<p><em>3. How did this use enhance your understanding of the topic/code?</em> It helped me understand how to digest the ggpairs function better. I feel that it can be hard to digest at first and understand which graph pairs with which x and y at first.</p>
+</section>
+<section id="final-project" class="level2">
+<h2 class="anchored" data-anchor-id="final-project">Final Project</h2>
+<p>Each student will complete an independent project using a dataset from their own research whenever possible. Students who do not have an appropriate dataset will be provided with one. <strong>If you do not have a dataset to use for this project, please reach out to Rob &amp; Gina as soon as possible.</strong></p>
+<p>The project is intended to mirror the statistical component of a scientific research study and will require students to integrate concepts learned throughout the course. Project components include:</p>
+<ul>
+<li>formulation of a research question, objective, and/or testable hypotheses;</li>
+<li>description of the study design and data with justification of design adequacy;</li>
+<li>exploratory data analysis;</li>
+<li>selection and justification of an appropriate modeling approach;</li>
+<li>model fitting, comparison, selection, and validation;</li>
+<li>interpretation of results in the context of the research question;</li>
+<li>preparation of publication-quality figures and tables;</li>
+<li>a written report in the style of a short scientific paper (approximately 4-6 pages); and</li>
+<li>a 3-minute lightening talk summarizing the study, analytical approach, results, and conclusions.</li>
+</ul>
+<p>Projects will be evaluated on the quality of the scientific question, appropriateness of the statistical methodology, rigor of the analysis, interpretation of results, clarity of written and oral communication, and reproducibility of the analytical workflow.</p>
+<p>To support you on this analytical journey, this project has been divided into four steps, which will all contribute to your final project grade (worth 50% of your total grade).</p>
+<ol type="1">
+<li>Project proposal, including research question and description of dataset</li>
+<li>Exploratory data analysis and proposed analytical approach</li>
+<li>Preliminary model fits and diagnostics</li>
+<li>Final paper and presentation</li>
+</ol>
+</section>
+<section id="project-proposal" class="level2">
+<h2 class="anchored" data-anchor-id="project-proposal">Project proposal</h2>
+<p><strong>Formulate 1-2 research questions, objectives, and/or testable hypotheses of interest. Provide sufficient detail for someone not familiar with your work to understand the goal(s) of your project. [2 pts]</strong></p>
+<p>Questions: 1. How does the colonization of Minuca pugnax into non-native habitats, the mud fiddler crab impact marsh stability; defined by soil strength as a proxy for erosion potential and vertical accretion of sediment?</p>
+<ol start="2" type="1">
+<li>Can the mussel, Guekensia demissa, offset the predicted negative effects of bioturbation of M. pugnax on marsh stability?</li>
+</ol>
+<p>Hypotheses: 1. I predict that the bioturbative effects of M. pugnax will decrease soil strength and vertical sediment accretion. Bioturbation from the fiddler crabs will reduce belowground biomass, bulk density, and aboveground biomass contributing to a reduction in root/plant-mediated sediment trapping.</p>
+<ol start="2" type="1">
+<li>There are known positive effect mussels can have on plant biomass and sediment accretion in salt marshes, I hypothesize they will offset the predictive negative effects of M. pugnax for soil strength, sediment accretion and known negative effects on Spartina alterniflora aboveground biomass. Their presence can act as a mediator for sediment trapping, replacing lost sediment trapping from salt marsh grass reduction and increase soil strength through the presence of their byssal threads.</li>
+</ol>
+<p><strong>Describe the study design and data, including justification of design adequacy to address the research question, objectives, and/or testable hypotheses described above. Provide sufficient detail to evaluate your data in the context of your questions of interest. [3 pts]</strong></p>
+<p>This study was conducted in Plum Island, Massachusetts where the fiddler crab M. pugnax is the only burrowing species &gt; 0.5 cm that live on the marsh platform. They are non-native here. I completed a 3-month caging study with 5 treatments: control, reference plot, crab only, mussel only, crab and mussel plot. The study was completed in a randomized block design with 8 replicates. The number of replicates were determined by using similar studies data to complete a power analysis. The reference plots were the only “cages” that only had the posts and no mesh to determine if the cages themselves had an effect on the outcome of the results. For the crab and mussel only plots, this was to identify the individual impact each species would have on the variables that I am testing. The crab and mussel treatment is to see the cumulative effects of them interacting with another and the variables. This study has a third question for my thesis but data for that will not be processed by the time this dataset is needed for class (percent carbon storage in plant biomass and marsh sediment).</p>
+<p>However data that has been collected and processed for this data set includes: soil strength at 10 cm increments to 50 cm in depth taken by a shear vane (kPa), elevation (RTK), vertical deposition which is measured by mineral mass of sediment over area over time, above ground biomass dry weight, stem count and stem height. I have stem count data for the start and the end of the experiment. The only additional data that may be added to this data set (hopefully if I can get it processed in time) is bulk density and belowground biomass. I am unsure if I will get these parameters done in time, but I think that my question can be answered even if I do not finish processing these parameters in time. I also have known burrow and mussel density as well as a ~10% sub sample of mussel height (cm) and crab carapace width (cm) and sex for the organisms that were placed in these cages. Even without having bulk density and belowground biomass data processed, soil strength can answer how the different treatments have impacted erosion potential of the marsh, those parameters are more or less covariates that can help further explain the mechanism that is reducing soil strength.</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
