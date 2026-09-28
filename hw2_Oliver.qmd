@@ -55,22 +55,25 @@ pairs(data) #quick data exploration before selecting ggplots
 #| message: false
 #| error: false
 
-ggplot(data, aes(x = liveStems, y = snailDensity, color = plantType))+ 
+g1 <- ggplot(data, aes(x = liveStems, y = snailDensity, color = plantType))+ 
   geom_point()+
   theme_classic()
+print(g1)
 
-ggplot(data, aes(x = burrows, y = snailDensity))+
+g2 <- ggplot(data, aes(x = burrows, y = snailDensity))+
   geom_point()+
   theme_classic()
+print(g2)
 
-ggplot(data, aes(x = burrows, y = liveStems))+
+g3 <- ggplot(data, aes(x = burrows, y = liveStems))+
   geom_point()+
   theme_classic()
+print(g3)
 
-ggplot(data, aes(x = mussels, y = snailDensity, color = plantType))+
+g4 <- ggplot(data, aes(x = mussels, y = snailDensity, color = plantType))+
   geom_point()+
   theme_classic()# doesn't really feel you much I don't think
-
+print(g4)
 ```
 
 **Describe your approach. What choices did you make in deciding which variables to use, plot types, etc., and why? \[1 pt\]**
@@ -100,13 +103,16 @@ H2: I predict that high stem count and species of marsh grass will effect snail 
 #| error: false
 
 m1 <- lm(snailDensity ~ burrows, data = data)
+summary(m1)
 
 m2 <- lm(snailDensity ~ burrows*liveStems, data = data)
+summary(m2)
 
 m3 <- lm(snailDensity ~ burrows*liveStems*plantType, data = data) #probably will have some multicolinearity
+summary(m3)
 
 m4 <- lm(snailDensity ~ burrows*plantType, data = data)
-
+summary(m4)
 ```
 
 **Evaluate your models using an approach covered as part of this class. \[1 pt\]**
@@ -130,7 +136,7 @@ vif(m4) #VIF is <5, some correlation but manageable
 AIC(m1, m2, m3, m4) %>% 
   arrange(AIC)
 
-#All AIC values are close within 1 other each other. Based on VIF and AIC m1 and m4 are the best options. I am going to go with m1. 
+#All AIC values are close within 1 other each other. Based on VIF and AIC m1 and m4 are the best options. I am going to go with m1. Even though it no longer answers Q2. 
 
 ```
 
@@ -156,7 +162,7 @@ summary(m1) #to get parameter estimates and SEs for the model. Do not need to ma
 
 #Fitted model over observed data
 
-ggplot(data, aes(y = snailDensity, x = burrows))+ 
+g5 <- ggplot(data, aes(y = snailDensity, x = burrows))+ 
   geom_point()+
   geom_smooth(method = "lm", formula = y ~ x, se = TRUE, color = "deeppink4")+
   labs(
@@ -164,7 +170,7 @@ ggplot(data, aes(y = snailDensity, x = burrows))+
     y = "Snail Density"
   )+
   theme_classic()
-
+print(g5)
 ```
 
 ** Provide parameter estimates and SEs for a model for the most supported model and plot the fitted model over observed data. \[2 pts\]**
@@ -173,10 +179,12 @@ Y = (-14.089)x + 194.792
 SE = 5.051
 R^2 = 0.1183
 
+The plot of the fitted model over observed data is in the code above. 
+
 ## Conclusions
 
 **Provide summary statements about the quality of your analysis, including any potential limitations or caveats. \[1 pt\]**
-Even though I am using only one variable as a predictor of the model, looking at information like VIF which caused the removal of looking at burrows and live stems as the VIF was high. Thus, I choose burrows as the variable to continue with. While grass type and burrows did not produce a high VIF, the AIC was higher when compared to the model with just burrows and the linearity and homogeneity graphs when looking at the performance trailed off. Thus, I choose m1 over all other models made. Limitations of this model is that it only has one variable and it does not predict snail density well. However, when looking at other variables like mussels in the exploratory page and evaluations from other models, this lead to me choosing burrows as the one variable. This model is limited as burrow data towards the tails are limited and is not describing the system that predicts snail density well. 
+Even though I am using only one variable as a predictor of the model, looking at information like VIF which caused the removal of looking at burrows and live stems as the VIF was high. Thus, I choose burrows as the variable to continue with. While grass type and burrows did not produce a high VIF, the AIC was higher when compared to the model with just burrows and the linearity and homogeneity graphs when looking at the performance trailed off. Thus, I choose m1 over all other models made. Limitations of this model is that it only has one variable and it does not predict snail density well. However, when looking at other variables like mussels in the exploratory page and evaluations from other models, this lead to me choosing burrows as the one variable. This model is limited as burrow data towards the tails are limited and is not describing the system that predicts snail density well. Additionally, choosing this model only answers one of my questions and not both that I presented at in the beginning. Due to live stem count and fiddler crab burrows being colinear, both questions could not be adressed directly. 
 
 ## AI statement
 
