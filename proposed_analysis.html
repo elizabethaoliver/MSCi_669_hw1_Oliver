@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Elizabeth Oliver">
+<meta name="dcterms.date" content="2026-10-05">
+
+<title>ARA 669 - Exploratory data analysis and proposed analytical approach</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="proposed_analysis_files/libs/clipboard/clipboard.min.js"></script>
+<script src="proposed_analysis_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="proposed_analysis_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="proposed_analysis_files/libs/quarto-html/popper.min.js"></script>
+<script src="proposed_analysis_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="proposed_analysis_files/libs/quarto-html/anchor.min.js"></script>
+<link href="proposed_analysis_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="proposed_analysis_files/libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="proposed_analysis_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="proposed_analysis_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="proposed_analysis_files/libs/bootstrap/bootstrap-215b371544c282197b31c8aa00ce3677.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">ARA 669 - Exploratory data analysis and proposed analytical approach</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Elizabeth Oliver </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 5, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="final-project---brief-summary" class="level2">
+<h2 class="anchored" data-anchor-id="final-project---brief-summary">Final Project - Brief Summary</h2>
+<p>####Questions: 1. How does the presence of the fiddler crab, Minuca pugnax, effect salt marsh stability: resistance to erosion (quantified by soil strength as a proxy) and vertical accretion? 2. Can the ribbed mussel, Guekensia demissa, offset the predicted negative effects of bioturbation of M. pugnax on marsh stability?</p>
+<p>####Hypotheses: 1.I predict that the bioturbative effects of M.pugnax will decrease soil strength and vertical sediment accretion. Bioturbation from the fiddler crabs will reduce belowground biomass, bulk density, and aboveground biomass contributing to a reduction in root/plant-mediated sediment trapping.</p>
+<p>2.There are known positive effect mussels can have on plant biomass and sediment accretion in salt marshes, I hypothesize they will offset the predictive negative effects of M.pugnax for soil strength, sediment accretion and known negative effects on Spartina alterniflora aboveground biomass. Their presence can act as a mediator for sediment trapping, replacing lost sediment trapping from salt marsh grass reduction and increase soil strength through the presence of their byssal threads.</p>
+<p>####Quick Experimental Design Background: In Plum Island, MA where the fiddler crab, M.pugnax is non-native to, I completed a 3-month caging study with 5 treatments: control, reference plot, crab only, mussel only, crab and mussel plot. The study was completed in a randomized block design with 8 replicates. Organisms were added to plots without fiddler crabs to minimize legacy effects and reflect a colonization event. Densities were held at 18 mussels m^-2 which reflect natural densities found throughout Plum Island. Fiddler crab densities were brought up to 85 crabs m^-2 then maintained between 50-85 m^-2 which are similar to intermediate densities found in their native range.The reference plots were the only “cages” that only had the posts and no mesh to determine if the cages themselves influenced the outcome of the results. Bioturbation is not being directly measured in this experiment, however, burrow count is a way to define burrowing activity. It is assumed that burrowing activity is continuously happening when fiddler crabs are present.</p>
+<p>####Data collected: All data was collected at the end of the 3-month caging experiment except for live and dead stem count which was taken at the beginning and end of the experimental period. All samples were collected in a 1/16th m^2 plot within the cage at the end of the experiment. Soil strength used, to define erosion potential was taken at 10 cm increments to a 50 cm depth. Sediment accretion which is a factor of vertical accretion was gained by placing sediment accretion tubes for a known time thus a known mineral mass/area/time can be calculated for each treatment. An RTK was used to gain elevation (m). Mussel and crab densities were counted throughout the summer to maintain densities and gained a final 1/16th m^2 count at the end of the experiment. A ~10% sub sample of mussel height (cm) and crab carapace width (cm) were taken before placing organisms in the cages.</p>
+</section>
+<section id="exploratory-data-analysis-and-proposed-analytical-approach" class="level2">
+<h2 class="anchored" data-anchor-id="exploratory-data-analysis-and-proposed-analytical-approach">Exploratory data analysis and proposed analytical approach</h2>
+<p>The goal of this component of the project is begin exploring your dataset and developing a plan for the analysis.</p>
+<p>Please submit this assignment via GitHub by <strong>12 October at 11:59pm</strong>, including the raw data, .qmd, and .html files. Be sure that the entire file runs without errors before submitting. You can create a new folder in your homework repository or create a new repository specific to the final project, whichever you prefer. This exploratory analysis, preliminary model fits (part 3), and code used for the final paper and presentation will all be submitted via GitHub.</p>
+</section>
+<section id="data-exploration" class="level2">
+<h2 class="anchored" data-anchor-id="data-exploration">Data exploration</h2>
+<p><strong>Use the code chunk below to load packages and the data.</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(viridis)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'Fiddler_cages_marsh_stability_working.csv'</span>) </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      Site_ID       Treatment    Replicate           Crab          Mussel  
+ Length   :40   Length   :40   Min.   :1.00   Length   :40   Length   :40  
+ N.unique :40   N.unique : 5   1st Qu.:2.75   N.unique : 3   N.unique : 3  
+ N.blank  : 0   N.blank  : 0   Median :4.50   N.blank  : 0   N.blank  : 0  
+ Min.nchar: 3   Min.nchar: 2   Mean   :4.50   Min.nchar: 2   Min.nchar: 2  
+ Max.nchar: 6   Max.nchar: 4   3rd Qu.:6.25   Max.nchar: 3   Max.nchar: 3  
+                               Max.   :8.00                                
+                                                                           
+     Date_start      Date_end     Latitude       Longitude       Live_count1   
+ Length   :40   Length   :40   Min.   :42.74   Min.   :-70.84   Min.   : 7.00  
+ N.unique : 1   N.unique : 2   1st Qu.:42.74   1st Qu.:-70.84   1st Qu.:16.00  
+ N.blank  : 0   N.blank  : 0   Median :42.74   Median :-70.84   Median :22.00  
+ Min.nchar: 8   Min.nchar: 9   Mean   :42.74   Mean   :-70.84   Mean   :24.98  
+ Max.nchar: 8   Max.nchar: 9   3rd Qu.:42.74   3rd Qu.:-70.84   3rd Qu.:29.50  
+                               Max.   :42.74   Max.   :-70.84   Max.   :56.00  
+                                                                               
+  Dead_count1      RTK_number       RTK_lat         RTK_long     
+ Min.   : 0.00   Min.   : 1.00   Min.   :42.74   Min.   :-70.84  
+ 1st Qu.: 4.00   1st Qu.:15.75   1st Qu.:42.74   1st Qu.:-70.84  
+ Median : 5.00   Median :25.50   Median :42.74   Median :-70.84  
+ Mean   : 5.70   Mean   :25.10   Mean   :42.74   Mean   :-70.84  
+ 3rd Qu.: 6.25   3rd Qu.:35.25   3rd Qu.:42.74   3rd Qu.:-70.84  
+ Max.   :16.00   Max.   :47.00   Max.   :42.74   Max.   :-70.84  
+                                                                 
+   Elevation      Ellipsoidal_height  Burrow_count   Mussel_count  
+ Min.   :0.7530   Min.   :-26.17     Min.   :0.00   Min.   :0.000  
+ 1st Qu.:0.9488   1st Qu.:-25.98     1st Qu.:0.00   1st Qu.:0.000  
+ Median :1.0520   Median :-25.87     Median :0.00   Median :0.000  
+ Mean   :1.0549   Mean   :-25.87     Mean   :1.65   Mean   :1.425  
+ 3rd Qu.:1.1600   3rd Qu.:-25.77     3rd Qu.:3.00   3rd Qu.:3.000  
+ Max.   :1.3160   Max.   :-25.61     Max.   :7.00   Max.   :6.000  
+                                                                   
+      ss1             ss2             ss3             ss4       
+ Min.   :0.600   Min.   :0.600   Min.   :0.700   Min.   :0.500  
+ 1st Qu.:1.200   1st Qu.:1.500   1st Qu.:1.600   1st Qu.:1.275  
+ Median :1.600   Median :2.100   Median :2.200   Median :1.650  
+ Mean   :1.786   Mean   :2.163   Mean   :2.152   Mean   :1.765  
+ 3rd Qu.:2.300   3rd Qu.:2.800   3rd Qu.:2.600   3rd Qu.:2.125  
+ Max.   :3.650   Max.   :3.800   Max.   :4.300   Max.   :3.200  
+                                                                
+      ss5             sed_dep1     sed_dep2            sed_dep3        
+ Min.   :0.500   Length   :40   Min.   :0.0003318   Min.   :0.0002991  
+ 1st Qu.:1.300   N.unique :39   1st Qu.:0.0005637   1st Qu.:0.0007292  
+ Median :1.550   N.blank  : 0   Median :0.0010487   Median :0.0009879  
+ Mean   :1.706   Min.nchar: 2   Mean   :0.0012864   Mean   :0.0013934  
+ 3rd Qu.:2.025   Max.nchar:11   3rd Qu.:0.0016102   3rd Qu.:0.0015959  
+ Max.   :4.100                  Max.   :0.0034713   Max.   :0.0048489  
+                                                                       
+      Area        Time_elapsed    Live_count2     Dead_count2   
+ Min.   :5.726   Min.   :7.000   Min.   : 6.00   Min.   :0.000  
+ 1st Qu.:5.726   1st Qu.:7.000   1st Qu.:18.00   1st Qu.:0.000  
+ Median :5.726   Median :8.000   Median :22.50   Median :0.000  
+ Mean   :5.726   Mean   :7.575   Mean   :23.27   Mean   :0.525  
+ 3rd Qu.:5.726   3rd Qu.:8.000   3rd Qu.:28.25   3rd Qu.:1.000  
+ Max.   :5.726   Max.   :8.000   Max.   :38.00   Max.   :6.000  
+                                                                
+    SA_len1         SA_len2         SA_len3         SA_len4     
+ Min.   : 88.3   Min.   : 84.9   Min.   : 84.1   Min.   : 80.9  
+ 1st Qu.:114.2   1st Qu.:111.3   1st Qu.:110.2   1st Qu.:103.7  
+ Median :131.3   Median :123.2   Median :125.7   Median :122.2  
+ Mean   :128.8   Mean   :126.2   Mean   :124.9   Mean   :121.4  
+ 3rd Qu.:145.3   3rd Qu.:147.0   3rd Qu.:139.2   3rd Qu.:139.0  
+ Max.   :167.2   Max.   :166.2   Max.   :164.1   Max.   :162.4  
+                                                                
+    SA_len5         SA_len6          SA_len7          SA_len8      
+ Min.   : 75.0   Min.   : 68.00   Min.   : 72.90   Min.   : 69.30  
+ 1st Qu.:100.7   1st Qu.: 95.42   1st Qu.: 94.85   1st Qu.: 92.95  
+ Median :118.2   Median :119.85   Median :114.50   Median :111.70  
+ Mean   :118.4   Mean   :116.94   Mean   :114.08   Mean   :112.23  
+ 3rd Qu.:134.3   3rd Qu.:134.85   3rd Qu.:129.55   3rd Qu.:132.70  
+ Max.   :162.4   Max.   :160.60   Max.   :163.50   Max.   :157.50  
+                                  NAs    :1        NAs    :1       
+    SA_len9         SA_len10    
+ Min.   : 52.4   Min.   : 57.1  
+ 1st Qu.: 92.8   1st Qu.: 92.6  
+ Median :112.2   Median :105.7  
+ Mean   :110.8   Mean   :107.4  
+ 3rd Qu.:126.8   3rd Qu.:123.0  
+ Max.   :153.5   Max.   :153.1  
+ NAs    :1       NAs    :1      </code></pre>
+</div>
+</div>
+<p>Need to make the NA values true NA values so the string is read as a numeric rather than chr so that I can calculate means.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sed_dep1 =</span> <span class="fu">as.numeric</span>(<span class="fu">na_if</span>(sed_dep1, <span class="st">"NA"</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: There was 1 warning in `mutate()`.
+ℹ In argument: `sed_dep1 = as.numeric(na_if(sed_dep1, "NA"))`.
+Caused by warning:
+! NAs introduced by coercion</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   40 obs. of  40 variables:
+ $ Site_ID           : chr  "cc1" "cc2" "cc3" "cc4" ...
+ $ Treatment         : chr  "cc" "cc" "cc" "cc" ...
+ $ Replicate         : int  1 2 3 4 5 6 7 8 1 2 ...
+ $ Crab              : chr  "yes" "yes" "yes" "yes" ...
+ $ Mussel            : chr  "no" "no" "no" "no" ...
+ $ Date_start        : chr  "6/3/2026" "6/3/2026" "6/3/2026" "6/3/2026" ...
+ $ Date_end          : chr  "8/24/2026" "8/24/2026" "8/24/2026" "8/25/2026" ...
+ $ Latitude          : num  42.7 42.7 42.7 42.7 42.7 ...
+ $ Longitude         : num  -70.8 -70.8 -70.8 -70.8 -70.8 ...
+ $ Live_count1       : int  12 18 20 12 31 17 10 24 34 27 ...
+ $ Dead_count1       : int  5 4 5 0 11 4 8 10 8 6 ...
+ $ RTK_number        : int  17 22 15 2 29 34 39 43 16 25 ...
+ $ RTK_lat           : num  42.7 42.7 42.7 42.7 42.7 ...
+ $ RTK_long          : num  -70.8 -70.8 -70.8 -70.8 -70.8 ...
+ $ Elevation         : num  1.184 1.14 1.135 0.983 1.187 ...
+ $ Ellipsoidal_height: num  -25.7 -25.8 -25.8 -25.9 -25.7 ...
+ $ Burrow_count      : int  3 3 7 3 3 6 6 5 0 0 ...
+ $ Mussel_count      : int  0 0 0 0 0 0 0 0 2 3 ...
+ $ ss1               : num  2.7 1.9 1.8 1.1 2.1 0.8 3 1.2 2.7 0.9 ...
+ $ ss2               : num  3.1 3.8 3 1.3 2.1 1.1 2.1 1.2 3 1.3 ...
+ $ ss3               : num  2.3 2.6 2.4 1.5 3.1 1 3.2 1.8 2.4 2.5 ...
+ $ ss4               : num  1.4 2.4 1.3 2 3.2 1 1.4 1 2.1 1 ...
+ $ ss5               : num  1.3 2.4 1.2 1.5 1.8 1.6 1.9 0.5 2.1 1.4 ...
+ $ sed_dep1          : num  0.001023 0.001003 0.001128 0.001384 0.000627 ...
+ $ sed_dep2          : num  0.000389 0.000664 0.001025 0.001384 0.00041 ...
+ $ sed_dep3          : num  0.000417 0.000579 0.001185 0.001024 0.004849 ...
+ $ Area              : num  5.73 5.73 5.73 5.73 5.73 ...
+ $ Time_elapsed      : int  7 7 7 8 8 8 8 8 7 7 ...
+ $ Live_count2       : int  28 14 20 18 28 18 12 25 38 19 ...
+ $ Dead_count2       : int  0 1 0 0 1 0 0 0 0 0 ...
+ $ SA_len1           : num  134.4 131 120.5 167.2 96.6 ...
+ $ SA_len2           : num  133.3 119.8 121.3 161 97.2 ...
+ $ SA_len3           : num  131.9 117.1 119.7 162 91.2 ...
+ $ SA_len4           : num  127.3 118.5 110.6 156.7 80.9 ...
+ $ SA_len5           : num  125.8 118.2 105 148.4 85.6 ...
+ $ SA_len6           : num  122.8 113 108.9 145.1 79.5 ...
+ $ SA_len7           : num  125 110 106 144 80 ...
+ $ SA_len8           : num  119.4 109.9 106.3 140.7 76.1 ...
+ $ SA_len9           : num  116 103 95 144.8 77.2 ...
+ $ SA_len10          : num  118.3 101.1 101.2 140.5 77.5 ...</code></pre>
+</div>
+</div>
+<p>Before making graphs I need to do some calculations. Each site there were 3 replicates of sediment deposition tubes to get a mean of sediment deposition. So I need to calculate the mean than find the deposition rate per area per time so I can compare it across sites.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"sed_dep1"</span>, <span class="st">"sed_dep2"</span>, <span class="st">"sed_dep3"</span>) <span class="co">#make a string to get the mean</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>dep_av <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(data[cols], <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="co">#mean while ignoring the NA</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">sed_dep_av =</span> (dep_av<span class="sc">/</span>(Area <span class="sc">*</span> Time_elapsed)), <span class="co">#sediment deposition/cm^2/day</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">sed_dep_sd =</span> <span class="fu">sd</span>(dep_av)<span class="sc">/</span>(Area <span class="sc">*</span> Time_elapsed) <span class="co">#area and time are constants between the 3 sediment deposition used for averages thus there is no variance between them. </span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Currently, mussel, crab, and stem counts are referencing a 1/16 meter squared plot.For ease of comparison, I am going to extrapolate it to a meter square density</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">Live_count1 =</span> Live_count1<span class="sc">*</span><span class="dv">16</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Dead_count1 =</span> Dead_count1<span class="sc">*</span><span class="dv">16</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mussel_count =</span> Mussel_count<span class="sc">*</span><span class="dv">16</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">Burrow_count =</span> Burrow_count<span class="sc">*</span><span class="dv">16</span>, </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">Live_count2 =</span> Live_count2<span class="sc">*</span><span class="dv">16</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">Dead_count2 =</span> Dead_count2<span class="sc">*</span><span class="dv">16</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Site_ID Treatment Replicate Crab Mussel Date_start  Date_end Latitude
+1      cc1        cc         1  yes     no   6/3/2026 8/24/2026 42.73986
+2      cc2        cc         2  yes     no   6/3/2026 8/24/2026 42.73973
+3      cc3        cc         3  yes     no   6/3/2026 8/24/2026 42.74014
+4      cc4        cc         4  yes     no   6/3/2026 8/25/2026 42.74062
+5      cc5        cc         5  yes     no   6/3/2026 8/25/2026 42.73954
+6      cc6        cc         6  yes     no   6/3/2026 8/25/2026 42.73988
+7      cc7        cc         7  yes     no   6/3/2026 8/25/2026 42.74012
+8      cc8        cc         8  yes     no   6/3/2026 8/25/2026 42.74017
+9      mc1        mc         1   no    yes   6/3/2026 8/24/2026 42.73988
+10     mc2        mc         2   no    yes   6/3/2026 8/24/2026 42.73961
+11     mc3        mc         3  yes    yes   6/3/2026 8/24/2026 42.74030
+12     mc4        mc         4   no    yes   6/3/2026 8/24/2026 42.74032
+13     mc5        mc         5   no    yes   6/3/2026 8/25/2026 42.73955
+14     mc6        mc         6   no    yes   6/3/2026 8/25/2026 42.73976
+15     mc7        mc         7   no    yes   6/3/2026 8/25/2026 42.74013
+16     mc8        mc         8   no    yes   6/3/2026 8/25/2026 42.74023
+17    mcc1       mcc         1  yes    yes   6/3/2026 8/24/2026 42.73978
+18    mcc2       mcc         2  yes    yes   6/3/2026 8/24/2026 42.73970
+19    mcc3       mcc         3   no    yes   6/3/2026 8/24/2026 42.74031
+20    mcc4       mcc         4  yes    yes   6/3/2026 8/25/2026 42.74059
+21    mcc5       mcc         5  yes    yes   6/3/2026 8/25/2026 42.73958
+22    mcc6       mcc         6  yes    yes   6/3/2026 8/25/2026 42.73993
+23    mcc7       mcc         7  yes    yes   6/3/2026 8/25/2026 42.73993
+24    mcc8       mcc         8  yes    yes   6/3/2026 8/25/2026 42.74017
+25   ncnc1      ncnc         1   na     na   6/3/2026 8/24/2026 42.73985
+26   ncnc2      ncnc         2   na     na   6/3/2026 8/24/2026 42.73974
+27   ncnc3      ncnc         3   na     na   6/3/2026 8/24/2026 42.74031
+28   ncnc4      ncnc         4   na     na   6/3/2026 8/25/2026 42.74065
+29   ncnc5      ncnc         5   na     na   6/3/2026 8/25/2026 42.73949
+30   ncnc6      ncnc         6   na     na   6/3/2026 8/25/2026 42.73971
+31   ncnc7      ncnc         7   na     na   6/3/2026 8/25/2026 42.73997
+32   ncnc8      ncnc         8   na     na   6/3/2026 8/25/2026 42.74018
+33  ncncm1      ncnm         1   no     no   6/3/2026 8/24/2026 42.73974
+34   ncnm2      ncnm         2   no     no   6/3/2026 8/24/2026 42.73962
+35   ncnm3      ncnm         3   no     no   6/3/2026 8/24/2026 42.74021
+36   ncnm4      ncnm         4   no     no   6/3/2026 8/25/2026 42.74058
+37   ncnm5      ncnm         5   no     no   6/3/2026 8/24/2026 42.73956
+38   ncnm6      ncnm         6   no     no   6/3/2026 8/25/2026 42.73967
+39   ncnm7      ncnm         7   no     no   6/3/2026 8/25/2026 42.74007
+40   ncnm8      ncnm         8   no     no   6/3/2026 8/25/2026 42.74005
+   Longitude Live_count1 Dead_count1 RTK_number  RTK_lat  RTK_long Elevation
+1  -70.83686         192          80         17 42.73983 -70.83682     1.184
+2  -70.83698         288          64         22 42.73970 -70.83696     1.140
+3  -70.83689         320          80         15 42.74008 -70.83684     1.135
+4  -70.83655         192           0          2 42.74059 -70.83651     0.983
+5  -70.83701         496         176         29 42.73951 -70.83698     1.187
+6  -70.83670         272          64         34 42.73985 -70.83668     0.753
+7  -70.83658         160         128         39 42.74010 -70.83658     1.273
+8  -70.83642         384         160         43 42.74018 -70.83643     1.052
+9  -70.83686         544         128         16 42.73985 -70.83682     1.218
+10 -70.83717         432          96         25 42.73957 -70.83713     1.109
+11 -70.83654         208          80         10 42.74026 -70.83651     0.972
+12 -70.83640         288          48          8 42.74028 -70.83636     0.931
+13 -70.83701         352         256         28 42.73949 -70.83698     1.316
+14 -70.83674         384          16         33 42.73975 -70.83670     0.809
+15 -70.83657         224          96         40 42.74011 -70.83655     1.275
+16 -70.83623         352          48         46 42.74021 -70.83625     0.987
+17 -70.83686         464          32         19 42.73975 -70.83683     0.827
+18 -70.83709         736         192         23 42.73965 -70.83706     1.034
+19 -70.83658         448          32         12 42.74025 -70.83654     1.068
+20 -70.83645         720          80          5 42.74054 -70.83642     0.948
+21 -70.83695         112          64         30 42.73955 -70.83693     1.053
+22 -70.83668         400          64         35 42.73988 -70.83668     0.927
+23 -70.83667         416          64         36 42.73993 -70.83667     1.160
+24 -70.83643         336          48         41 42.74016 -70.83645     1.002
+25 -70.83687         176          64         18 42.73981 -70.83682     1.184
+26 -70.83697         352          80         21 42.73970 -70.83694     1.160
+27 -70.83648         304          80          9 42.74028 -70.83645     1.128
+28 -70.83662         544          48          1 42.74062 -70.83659     0.892
+29 -70.83706         608         128         27 42.73944 -70.83701     1.090
+30 -70.83672         464         112         32 42.73970 -70.83671     1.052
+31 -70.83668         192          64         37 42.73997 -70.83668     1.028
+32 -70.83633         640          96         44 42.74019 -70.83633     0.943
+33 -70.83691         896          80         20 42.73970 -70.83689     0.886
+34 -70.83717         256         192         24 42.73959 -70.83713     1.308
+35 -70.83682         304          96         14 42.74015 -70.83678     1.251
+36 -70.83643         816          48          7 42.74053 -70.83640     0.949
+37 -70.83717         896          96         26 42.73952 -70.83715     0.949
+38 -70.83669         256         208         31 42.73964 -70.83672     1.149
+39 -70.83662         368          80         38 42.74007 -70.83664     0.929
+40 -70.83812         192          80         47 42.74021 -70.83622     0.955
+   Ellipsoidal_height Burrow_count Mussel_count  ss1 ss2 ss3 ss4  ss5
+1             -25.742           48            0 2.70 3.1 2.3 1.4 1.30
+2             -25.786           48            0 1.90 3.8 2.6 2.4 2.40
+3             -25.792          112            0 1.80 3.0 2.4 1.3 1.20
+4             -25.943           48            0 1.10 1.3 1.5 2.0 1.50
+5             -25.739           48            0 2.10 2.1 3.1 3.2 1.80
+6             -26.173           96            0 0.80 1.1 1.0 1.0 1.60
+7             -25.652           96            0 3.00 2.1 3.2 1.4 1.90
+8             -25.874           80            0 1.20 1.2 1.8 1.0 0.50
+9             -25.708            0           32 2.70 3.0 2.4 2.1 2.10
+10            -25.818            0           48 0.90 1.3 2.5 1.0 1.40
+11            -25.954            0           96 1.70 2.8 1.7 1.4 1.30
+12            -25.994            0           48 1.00 2.1 3.0 3.2 2.30
+13            -25.611            0           48 1.30 2.8 2.6 2.2 1.50
+14            -26.117            0           32 1.10 1.2 1.5 1.1 1.50
+15            -25.651            0           96 3.10 3.6 2.0 2.0 2.60
+16            -25.938            0           80 1.80 2.2 2.4 1.5 1.50
+17            -26.100           32           48 1.40 0.9 1.6 1.9 1.60
+18            -25.893           48           48 1.50 1.5 1.9 1.6 1.40
+19            -25.858           48           48 0.60 0.6 1.0 1.0 4.10
+20            -25.978           32           80 1.50 1.6 2.8 2.2 1.30
+21            -25.873           64           48 2.00 3.4 1.0 1.2 1.40
+22            -25.999           96           48 1.20 1.5 2.6 1.3 3.40
+23            -25.766           64           64 2.80 3.4 1.6 1.1 0.70
+24            -25.924           32           48 1.20 1.5 1.2 1.9 0.90
+25            -25.742           64            0 2.60 2.7 2.4 1.6 2.15
+26            -25.767            0            0 3.10 2.6 2.5 2.2 2.00
+27            -25.798            0            0 0.70 3.0 2.9 3.0 2.10
+28            -26.034            0            0 1.50 1.6 1.8 1.8 1.90
+29            -25.837            0            0 2.60 2.7 2.7 1.6 1.40
+30            -25.874            0            0 1.60 2.1 4.3 2.1 1.90
+31            -25.898            0            0 3.65 2.8 1.6 0.8 0.90
+32            -25.983            0            0 1.60 1.9 1.3 1.4 1.00
+33            -26.040            0            0 1.70 1.6 2.1 2.7 1.70
+34            -25.619            0            0 1.60 2.3 3.0 2.6 1.50
+35            -25.675            0            0 3.00 3.2 3.5 3.2 2.10
+36            -25.977            0            0 0.90 0.9 1.1 1.8 1.80
+37            -25.977            0            0 1.20 2.6 2.1 1.7 1.80
+38            -25.777            0            0 2.20 2.0 1.9 2.1 2.90
+39            -25.997            0            0 1.50 1.5 0.7 0.5 0.90
+40            -25.970            0            0 1.60 1.9 2.5 1.1 1.00
+      sed_dep1    sed_dep2    sed_dep3     Area Time_elapsed Live_count2
+1  0.001022983 0.000389233 0.000416678 5.725553            7         448
+2  0.001003022 0.000663691 0.000578859 5.725553            7         224
+3  0.001127776 0.001025478 0.001185163 5.725553            7         320
+4  0.001384146 0.001384146 0.001023919 5.725553            8         288
+5  0.000626577 0.000410441 0.004848877 5.725553            8         448
+6  0.004292162 0.003469097 0.002342569 5.725553            8         288
+7  0.000606928 0.000547982 0.000299098 5.725553            8         192
+8  0.001395062 0.001194208 0.001766205 5.725553            8         400
+9  0.000696127 0.000568878 0.000484046 5.725553            7         608
+10 0.000484046 0.000973081 0.000765990 5.725553            7         304
+11 0.003305982 0.002475120 0.004775584 5.725553            7         192
+12 0.001472097 0.001843864 0.002008540 5.725553            7         272
+13 0.000449738 0.000366777 0.000521784 5.725553            8         352
+14 0.009027513 0.003471281 0.003375220 5.725553            8         512
+15 0.000606928 0.000401708 0.001085048 5.725553            8         336
+16 0.001135262 0.000864545 0.000825248 5.725553            8         160
+17 0.001639268 0.002510051 0.001307422 5.725553            7         512
+18 0.000983062 0.000543928 0.000828367 5.725553            7         336
+19 0.001781487 0.001566911 0.001130271 5.725553            7         448
+20 0.000685523 0.001740007 0.000768485 5.725553            8         528
+21 0.000831797 0.000362410 0.000558898 5.725553            8         256
+22 0.001718175 0.001943044 0.002482293 5.725553            8         432
+23 0.001034835 0.001320833 0.001050117 5.725553            8         352
+24 0.001309917 0.001226956 0.001536970 5.725553            8         416
+25          NA 0.000723573 0.000733554 5.725553            7         304
+26 0.000646226 0.000943140 0.003710185 5.725553            7         496
+27 0.001265006 0.001434671 0.000828367 5.725553            7         288
+28 0.000910392 0.000951873 0.001157094 5.725553            8         512
+29 0.001250971 0.001157094 0.001264070 5.725553            8         512
+30 0.001242238 0.000919125 0.001539153 5.725553            8         464
+31 0.000995537 0.002803223 0.000951873 5.725553            8         368
+32 0.000419174 0.000582913 0.000567631 5.725553            8         576
+33 0.002312940 0.003178732 0.002891798 5.725553            7         416
+34 0.000798426 0.000504006 0.000878268 5.725553            7         304
+35 0.001220094 0.001190153 0.000716088 5.725553            7         304
+36 0.000451921 0.001071949 0.000825248 5.725553            8         448
+37 0.001961133 0.002490090 0.001898756 5.725553            7         416
+38 0.000301281 0.000331846 0.000862362 5.725553            8         272
+39 0.000668058 0.001392879 0.000419174 5.725553            8         496
+40 0.000534883 0.000515234 0.000526150 5.725553            8          96
+   Dead_count2 SA_len1 SA_len2 SA_len3 SA_len4 SA_len5 SA_len6 SA_len7 SA_len8
+1            0   134.4   133.3   131.9   127.3   125.8   122.8   125.0   119.4
+2           16   131.0   119.8   117.1   118.5   118.2   113.0   110.3   109.9
+3            0   120.5   121.3   119.7   110.6   105.0   108.9   105.7   106.3
+4            0   167.2   161.0   162.0   156.7   148.4   145.1   144.0   140.7
+5           16    96.6    97.2    91.2    80.9    85.6    79.5    80.0    76.1
+6            0   156.8   151.2   150.5   150.9   149.7   144.0   145.8   143.2
+7            0    90.9    84.9    84.1    83.2    75.0    68.0    72.9    69.3
+8            0   161.7   157.6   149.7   151.1   139.8   141.3   133.0   133.5
+9            0   108.4   111.9   102.2   104.5   104.3    95.6    93.6    95.2
+10           0   119.9   122.6   120.6   115.8   114.1   113.8   107.3   107.8
+11           0   127.1   122.3   119.1   103.9    99.8    94.7    93.3    86.5
+12           0   145.3   146.5   134.6   126.8   118.3   115.9   114.5   111.7
+13           0    88.3    87.4    87.8    85.4    83.9    77.9    80.1    74.4
+14           0   158.0   158.6   155.8   155.9   155.9   153.7   159.0   153.2
+15           0   101.1    89.9    90.0    83.9    86.4    81.0    79.3    73.0
+16           0   100.9    91.7   133.5   139.4   121.6   142.6   128.8   138.1
+17          16   151.5   151.1   149.1   146.3   149.9   144.9   147.5   144.0
+18           0   125.4   123.1   119.1   118.8   117.9   117.0   116.2   113.8
+19          16   141.1   138.6   135.4   140.1   132.8   133.8   123.5   129.8
+20           0   132.8   134.4   127.2   125.5   125.4   123.9   122.7   122.0
+21          32   114.8   108.8   104.8   102.5   101.0    94.9    93.1    94.5
+22           0   146.6   148.4   147.4   138.9   138.8   133.0   108.3    93.6
+23           0   112.5   109.7   111.1   102.1    97.8    94.2    96.1    91.1
+24           0   162.5   166.2   164.1   162.4   162.4   160.6   163.5   157.5
+25           0   106.6   105.7   103.3   102.9    92.2    90.1    86.2    85.8
+26           0   125.3   115.8   114.0   113.0   108.8   104.5   104.5    96.6
+27          32   115.3   112.2   116.0   113.2   116.5   112.9    99.0    92.3
+28          32   145.5   149.0   151.6   137.2   141.6   134.5   130.3   139.3
+29          96   131.7   134.4   133.3   129.3   131.6   126.3   130.9   125.6
+30           0   134.7   134.6   136.5   127.9   127.3   128.3   126.1   124.5
+31          16   124.1   123.3   124.2   121.0   114.4   107.4   102.2   101.8
+32           0   133.4   137.5   133.6   129.8   130.0   125.5   125.6   131.9
+33           0   153.5   153.1   152.0   148.5   146.2   146.7   142.1   143.5
+34           0    93.8    91.2    94.4    91.9    84.3    83.7    82.5    81.3
+35           0    95.8    95.4    88.0    94.2    86.8    85.4    87.4    83.0
+36           0   133.9   119.6   133.7   123.4   123.9   124.1   122.7   120.2
+37          16   162.0   157.2   153.8   149.0   147.0   143.0   141.0   138.4
+38           0   140.9   129.8   127.3   128.9   124.5   122.7   118.6   119.0
+39           0   133.8   130.6   117.2   114.1   109.2   106.4   106.7   109.0
+40          48   127.2   120.6   107.3   101.8    95.6   135.9      NA      NA
+   SA_len9 SA_len10   sed_dep_av   sed_dep_sd
+1    116.0    118.3 1.521079e-05 2.442016e-05
+2    103.0    101.1 1.867628e-05 2.442016e-05
+3     95.0    101.2 2.776540e-05 2.442016e-05
+4    144.8    140.5 2.759713e-05 2.136764e-05
+5     77.2     77.5 4.283353e-05 2.136764e-05
+6    147.3    141.0 7.352877e-05 2.136764e-05
+7     52.4     57.1 1.058128e-05 2.136764e-05
+8    127.5    108.3 3.169618e-05 2.136764e-05
+9     95.5     93.9 1.454674e-05 2.442016e-05
+10   102.6    102.8 1.848952e-05 2.442016e-05
+11    82.0     84.9 8.779927e-05 2.442016e-05
+12   112.2    107.6 4.428353e-05 2.442016e-05
+13    74.2     75.0 9.739227e-06 2.136764e-05
+14   150.1    153.1 1.155202e-04 2.136764e-05
+15    77.3     73.4 1.523640e-05 2.136764e-05
+16   141.9    100.1 2.055882e-05 2.136764e-05
+17   145.2    140.6 4.538336e-05 2.442016e-05
+18   112.3    112.7 1.958935e-05 2.442016e-05
+19   124.5    117.5 3.724880e-05 2.442016e-05
+20   118.6    115.5 2.324386e-05 2.136764e-05
+21    91.2     91.3 1.275790e-05 2.136764e-05
+22   102.4    103.5 4.470829e-05 2.136764e-05
+23    88.7     88.6 2.478498e-05 2.136764e-05
+24   153.5    145.6 2.964665e-05 2.136764e-05
+25    83.2     78.6 1.817825e-05 2.442016e-05
+26    96.0     97.1 4.407602e-05 2.442016e-05
+27    94.4     94.3 2.934251e-05 2.442016e-05
+28   139.9    132.7 2.197284e-05 2.136764e-05
+29   125.2    121.7 2.672329e-05 2.136764e-05
+30   124.6    124.3 2.692983e-05 2.136764e-05
+31   101.7     96.6 3.457187e-05 2.136764e-05
+32   126.2    129.1 1.142334e-05 2.136764e-05
+33   144.2    140.8 6.972477e-05 2.442016e-05
+34    81.0     71.6 1.813674e-05 2.442016e-05
+35    86.0     85.4 2.600152e-05 2.442016e-05
+36   119.1    115.5 1.709528e-05 2.136764e-05
+37   142.5    138.8 5.281236e-05 2.442016e-05
+38   113.4    105.7 1.088315e-05 2.136764e-05
+39   108.4    106.2 1.804856e-05 2.136764e-05
+40      NA       NA 1.147100e-05 2.136764e-05</code></pre>
+</div>
+</div>
+<p>For figure 2 I need the ss(soil strength) values in long format so that I can graph the 5 readings to depth and include a depth scale</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>pivot_long <span class="ot">&lt;-</span> data[,<span class="sc">-</span><span class="fu">c</span>(<span class="dv">6</span><span class="sc">:</span><span class="dv">18</span>,<span class="dv">24</span><span class="sc">:</span><span class="dv">42</span>)] <span class="co">#remove unneeded data for the graph</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>pivot_long <span class="ot">&lt;-</span> pivot_long <span class="sc">%&gt;%</span> <span class="co">#make table in long format with desired data</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">"ss"</span>),</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"Depth"</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_prefix =</span> <span class="st">"ss"</span>,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"Soil_Strength"</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pivot_long)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 200 × 7
+   Site_ID Treatment Replicate Crab  Mussel Depth Soil_Strength
+   &lt;chr&gt;   &lt;chr&gt;         &lt;int&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;         &lt;dbl&gt;
+ 1 cc1     cc                1 yes   no     1               2.7
+ 2 cc1     cc                1 yes   no     2               3.1
+ 3 cc1     cc                1 yes   no     3               2.3
+ 4 cc1     cc                1 yes   no     4               1.4
+ 5 cc1     cc                1 yes   no     5               1.3
+ 6 cc2     cc                2 yes   no     1               1.9
+ 7 cc2     cc                2 yes   no     2               3.8
+ 8 cc2     cc                2 yes   no     3               2.6
+ 9 cc2     cc                2 yes   no     4               2.4
+10 cc2     cc                2 yes   no     5               2.4
+# ℹ 190 more rows</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>summary_long <span class="ot">&lt;-</span> pivot_long <span class="sc">%&gt;%</span> <span class="co">#get means for simplicity of the plot</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Treatment, Depth) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(Soil_Strength), </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">se =</span> <span class="fu">sd</span>(Soil_Strength),</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">xmin =</span> mean <span class="sc">-</span> se,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">xmax =</span> mean <span class="sc">+</span> se,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Treatment =</span> <span class="fu">recode</span>( <span class="co">#rename the Treatments</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    Treatment,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"cc"</span> <span class="ot">=</span> <span class="st">"Crab Only"</span>,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"mc"</span> <span class="ot">=</span> <span class="st">"Mussel Only"</span>,</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"mcc"</span> <span class="ot">=</span> <span class="st">"Crab &amp; Mussel"</span>,</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ncnc"</span> <span class="ot">=</span> <span class="st">"Reference"</span>,</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ncnm"</span> <span class="ot">=</span> <span class="st">"Control"</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(summary_long)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 25 × 6
+   Treatment   Depth  mean    se  xmin  xmax
+   &lt;chr&gt;       &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+ 1 Crab Only   1      1.82 0.774 1.05   2.60
+ 2 Crab Only   2      2.21 1.00  1.21   3.22
+ 3 Crab Only   3      2.24 0.765 1.47   3.00
+ 4 Crab Only   4      1.71 0.770 0.943  2.48
+ 5 Crab Only   5      1.52 0.560 0.965  2.08
+ 6 Mussel Only 1      1.7  0.812 0.888  2.51
+ 7 Mussel Only 2      2.38 0.836 1.54   3.21
+ 8 Mussel Only 3      2.26 0.496 1.77   2.76
+ 9 Mussel Only 4      1.81 0.720 1.09   2.53
+10 Mussel Only 5      1.78 0.486 1.29   2.26
+# ℹ 15 more rows</code></pre>
+</div>
+</div>
+<p><strong>Based on your research questions, objectives, and/or testable hypotheses, develop data visualizations using ggplot2. Consider visualizations that show relationships, the distribution of the underlying data, etc. If you need inspiration, check out the <a href="https://r-graph-gallery.com/">R Graph Gallery</a>. For each visualization, describe your approach: what choices did you make in deciding which variables to use, plot types, etc., and why? [2.5 pts]</strong></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>fig1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x=</span> Treatment, <span class="at">y =</span> sed_dep_av, <span class="at">color =</span> Elevation))<span class="sc">+</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>)<span class="sc">+</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Treatment"</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Sediment Deposition (g/cm²/day)"</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">+</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Crab Only"</span>, <span class="st">"Mussel Only"</span>, <span class="st">"Mussel &amp; Crab"</span>, <span class="st">"Reference"</span>, <span class="st">"Control"</span>))<span class="sc">+</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_viridis</span>()<span class="sc">+</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fig1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="proposed_analysis_files/figure-html/fig1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>For figure 1, I am looking at the different sediment deposition rates relative to each treatment. This will help to answer how the presence of the fiddler crab will effect vertical accretion and if the presence of mussels can offset the impact the fiddler crabs will have. Sediment deposition is being used to define vertical accretion. I am not trying to scale up to vertical annual accretion rates but used them as comparative values between treatments. Elevation is provided as a scale for each replicate as the cages where placed at different elevations (due to natural differences found in salt marshes). Elevation is a factor that can effect vertical accretion. Thus it is important to consider elevation compared to the sediment deposition rates calculated. For example, it makes sense that for individual treatments like the mussel only treatments, you see lower sediment deposition at replicates with higher elevation and higher sediment deposition rates in replicates with lower elevation as there is a reduction in water that is transporting sediment at higher elevations compared to lower elevations. The variance between the mussel treatment is high but that could be explained by the elevation differences similarly with the crab only plot. However the control plot also has some variance but the elevation is within a smaller range compared to other plots. I choose to do a scatter instead of a box plot because I wanted to visualize elevation at each point which I would loose this feature if I did box or violin plots.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>fig2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(summary_long, <span class="fu">aes</span>(<span class="at">x =</span> mean, <span class="at">y =</span> Depth, <span class="at">color =</span> Treatment))<span class="sc">+</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> Treatment), <span class="at">orientation =</span> <span class="st">"y"</span>, <span class="at">linewidth =</span> <span class="fl">0.8</span>)<span class="sc">+</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_discrete</span>(<span class="at">limits =</span> rev)<span class="sc">+</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> Treatment)<span class="sc">+</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Soil Strength (kPa)"</span>,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Depth (cm)"</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">+</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_discrete</span>(<span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"40-50"</span>, <span class="st">"30-40"</span>, <span class="st">"20-30"</span>, <span class="st">"10-20"</span>, <span class="st">"0-10"</span>))<span class="sc">+</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fig2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="proposed_analysis_files/figure-html/fig2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Figure 2 hopes show relationships between treatment and soil strength at depth. This hopes to answer how differing treatments specifically the presence of fiddler crab has on erosion potential which is being measured by soil strength. Without manipulation, soil strength is expected to be highest at depths 10-20 &amp; 20-30 as this is where a majority of the root mass from Spartina is found. I did the means of soil strength for each depth interval for each treatment. Instead of having the points all on one plot, I used facet_wrap so that I could look at each treatment individually. I reversed the depth profile using limits = rev so that visually, it was going to depth rather than the deepest core being on the top. I choose to do a line scatter as I thought this would help visually represent what is happening with soil strength at each depth. From this graph it may be interesting to see what a scatter plot of each depth looks like for each treatment.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>data2 <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="co">#organize data into categories based on organism present</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">Category =</span> <span class="fu">case_when</span>(</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>      Crab <span class="sc">==</span> <span class="st">"yes"</span> <span class="sc">&amp;</span> Mussel <span class="sc">==</span> <span class="st">"no"</span> <span class="sc">~</span> <span class="st">"Crab"</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>      Crab <span class="sc">==</span> <span class="st">"no"</span> <span class="sc">&amp;</span> Mussel <span class="sc">==</span> <span class="st">"yes"</span> <span class="sc">~</span> <span class="st">"Mussel"</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>      Crab <span class="sc">==</span> <span class="st">"yes"</span> <span class="sc">&amp;</span> Mussel <span class="sc">==</span> <span class="st">"yes"</span> <span class="sc">~</span> <span class="st">"Crab + Mussel"</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"None"</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(data2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Site_ID Treatment Replicate Crab Mussel Date_start  Date_end Latitude
+1      cc1        cc         1  yes     no   6/3/2026 8/24/2026 42.73986
+2      cc2        cc         2  yes     no   6/3/2026 8/24/2026 42.73973
+3      cc3        cc         3  yes     no   6/3/2026 8/24/2026 42.74014
+4      cc4        cc         4  yes     no   6/3/2026 8/25/2026 42.74062
+5      cc5        cc         5  yes     no   6/3/2026 8/25/2026 42.73954
+6      cc6        cc         6  yes     no   6/3/2026 8/25/2026 42.73988
+7      cc7        cc         7  yes     no   6/3/2026 8/25/2026 42.74012
+8      cc8        cc         8  yes     no   6/3/2026 8/25/2026 42.74017
+9      mc1        mc         1   no    yes   6/3/2026 8/24/2026 42.73988
+10     mc2        mc         2   no    yes   6/3/2026 8/24/2026 42.73961
+11     mc3        mc         3  yes    yes   6/3/2026 8/24/2026 42.74030
+12     mc4        mc         4   no    yes   6/3/2026 8/24/2026 42.74032
+13     mc5        mc         5   no    yes   6/3/2026 8/25/2026 42.73955
+14     mc6        mc         6   no    yes   6/3/2026 8/25/2026 42.73976
+15     mc7        mc         7   no    yes   6/3/2026 8/25/2026 42.74013
+16     mc8        mc         8   no    yes   6/3/2026 8/25/2026 42.74023
+17    mcc1       mcc         1  yes    yes   6/3/2026 8/24/2026 42.73978
+18    mcc2       mcc         2  yes    yes   6/3/2026 8/24/2026 42.73970
+19    mcc3       mcc         3   no    yes   6/3/2026 8/24/2026 42.74031
+20    mcc4       mcc         4  yes    yes   6/3/2026 8/25/2026 42.74059
+21    mcc5       mcc         5  yes    yes   6/3/2026 8/25/2026 42.73958
+22    mcc6       mcc         6  yes    yes   6/3/2026 8/25/2026 42.73993
+23    mcc7       mcc         7  yes    yes   6/3/2026 8/25/2026 42.73993
+24    mcc8       mcc         8  yes    yes   6/3/2026 8/25/2026 42.74017
+25   ncnc1      ncnc         1   na     na   6/3/2026 8/24/2026 42.73985
+26   ncnc2      ncnc         2   na     na   6/3/2026 8/24/2026 42.73974
+27   ncnc3      ncnc         3   na     na   6/3/2026 8/24/2026 42.74031
+28   ncnc4      ncnc         4   na     na   6/3/2026 8/25/2026 42.74065
+29   ncnc5      ncnc         5   na     na   6/3/2026 8/25/2026 42.73949
+30   ncnc6      ncnc         6   na     na   6/3/2026 8/25/2026 42.73971
+31   ncnc7      ncnc         7   na     na   6/3/2026 8/25/2026 42.73997
+32   ncnc8      ncnc         8   na     na   6/3/2026 8/25/2026 42.74018
+33  ncncm1      ncnm         1   no     no   6/3/2026 8/24/2026 42.73974
+34   ncnm2      ncnm         2   no     no   6/3/2026 8/24/2026 42.73962
+35   ncnm3      ncnm         3   no     no   6/3/2026 8/24/2026 42.74021
+36   ncnm4      ncnm         4   no     no   6/3/2026 8/25/2026 42.74058
+37   ncnm5      ncnm         5   no     no   6/3/2026 8/24/2026 42.73956
+38   ncnm6      ncnm         6   no     no   6/3/2026 8/25/2026 42.73967
+39   ncnm7      ncnm         7   no     no   6/3/2026 8/25/2026 42.74007
+40   ncnm8      ncnm         8   no     no   6/3/2026 8/25/2026 42.74005
+   Longitude Live_count1 Dead_count1 RTK_number  RTK_lat  RTK_long Elevation
+1  -70.83686         192          80         17 42.73983 -70.83682     1.184
+2  -70.83698         288          64         22 42.73970 -70.83696     1.140
+3  -70.83689         320          80         15 42.74008 -70.83684     1.135
+4  -70.83655         192           0          2 42.74059 -70.83651     0.983
+5  -70.83701         496         176         29 42.73951 -70.83698     1.187
+6  -70.83670         272          64         34 42.73985 -70.83668     0.753
+7  -70.83658         160         128         39 42.74010 -70.83658     1.273
+8  -70.83642         384         160         43 42.74018 -70.83643     1.052
+9  -70.83686         544         128         16 42.73985 -70.83682     1.218
+10 -70.83717         432          96         25 42.73957 -70.83713     1.109
+11 -70.83654         208          80         10 42.74026 -70.83651     0.972
+12 -70.83640         288          48          8 42.74028 -70.83636     0.931
+13 -70.83701         352         256         28 42.73949 -70.83698     1.316
+14 -70.83674         384          16         33 42.73975 -70.83670     0.809
+15 -70.83657         224          96         40 42.74011 -70.83655     1.275
+16 -70.83623         352          48         46 42.74021 -70.83625     0.987
+17 -70.83686         464          32         19 42.73975 -70.83683     0.827
+18 -70.83709         736         192         23 42.73965 -70.83706     1.034
+19 -70.83658         448          32         12 42.74025 -70.83654     1.068
+20 -70.83645         720          80          5 42.74054 -70.83642     0.948
+21 -70.83695         112          64         30 42.73955 -70.83693     1.053
+22 -70.83668         400          64         35 42.73988 -70.83668     0.927
+23 -70.83667         416          64         36 42.73993 -70.83667     1.160
+24 -70.83643         336          48         41 42.74016 -70.83645     1.002
+25 -70.83687         176          64         18 42.73981 -70.83682     1.184
+26 -70.83697         352          80         21 42.73970 -70.83694     1.160
+27 -70.83648         304          80          9 42.74028 -70.83645     1.128
+28 -70.83662         544          48          1 42.74062 -70.83659     0.892
+29 -70.83706         608         128         27 42.73944 -70.83701     1.090
+30 -70.83672         464         112         32 42.73970 -70.83671     1.052
+31 -70.83668         192          64         37 42.73997 -70.83668     1.028
+32 -70.83633         640          96         44 42.74019 -70.83633     0.943
+33 -70.83691         896          80         20 42.73970 -70.83689     0.886
+34 -70.83717         256         192         24 42.73959 -70.83713     1.308
+35 -70.83682         304          96         14 42.74015 -70.83678     1.251
+36 -70.83643         816          48          7 42.74053 -70.83640     0.949
+37 -70.83717         896          96         26 42.73952 -70.83715     0.949
+38 -70.83669         256         208         31 42.73964 -70.83672     1.149
+39 -70.83662         368          80         38 42.74007 -70.83664     0.929
+40 -70.83812         192          80         47 42.74021 -70.83622     0.955
+   Ellipsoidal_height Burrow_count Mussel_count  ss1 ss2 ss3 ss4  ss5
+1             -25.742           48            0 2.70 3.1 2.3 1.4 1.30
+2             -25.786           48            0 1.90 3.8 2.6 2.4 2.40
+3             -25.792          112            0 1.80 3.0 2.4 1.3 1.20
+4             -25.943           48            0 1.10 1.3 1.5 2.0 1.50
+5             -25.739           48            0 2.10 2.1 3.1 3.2 1.80
+6             -26.173           96            0 0.80 1.1 1.0 1.0 1.60
+7             -25.652           96            0 3.00 2.1 3.2 1.4 1.90
+8             -25.874           80            0 1.20 1.2 1.8 1.0 0.50
+9             -25.708            0           32 2.70 3.0 2.4 2.1 2.10
+10            -25.818            0           48 0.90 1.3 2.5 1.0 1.40
+11            -25.954            0           96 1.70 2.8 1.7 1.4 1.30
+12            -25.994            0           48 1.00 2.1 3.0 3.2 2.30
+13            -25.611            0           48 1.30 2.8 2.6 2.2 1.50
+14            -26.117            0           32 1.10 1.2 1.5 1.1 1.50
+15            -25.651            0           96 3.10 3.6 2.0 2.0 2.60
+16            -25.938            0           80 1.80 2.2 2.4 1.5 1.50
+17            -26.100           32           48 1.40 0.9 1.6 1.9 1.60
+18            -25.893           48           48 1.50 1.5 1.9 1.6 1.40
+19            -25.858           48           48 0.60 0.6 1.0 1.0 4.10
+20            -25.978           32           80 1.50 1.6 2.8 2.2 1.30
+21            -25.873           64           48 2.00 3.4 1.0 1.2 1.40
+22            -25.999           96           48 1.20 1.5 2.6 1.3 3.40
+23            -25.766           64           64 2.80 3.4 1.6 1.1 0.70
+24            -25.924           32           48 1.20 1.5 1.2 1.9 0.90
+25            -25.742           64            0 2.60 2.7 2.4 1.6 2.15
+26            -25.767            0            0 3.10 2.6 2.5 2.2 2.00
+27            -25.798            0            0 0.70 3.0 2.9 3.0 2.10
+28            -26.034            0            0 1.50 1.6 1.8 1.8 1.90
+29            -25.837            0            0 2.60 2.7 2.7 1.6 1.40
+30            -25.874            0            0 1.60 2.1 4.3 2.1 1.90
+31            -25.898            0            0 3.65 2.8 1.6 0.8 0.90
+32            -25.983            0            0 1.60 1.9 1.3 1.4 1.00
+33            -26.040            0            0 1.70 1.6 2.1 2.7 1.70
+34            -25.619            0            0 1.60 2.3 3.0 2.6 1.50
+35            -25.675            0            0 3.00 3.2 3.5 3.2 2.10
+36            -25.977            0            0 0.90 0.9 1.1 1.8 1.80
+37            -25.977            0            0 1.20 2.6 2.1 1.7 1.80
+38            -25.777            0            0 2.20 2.0 1.9 2.1 2.90
+39            -25.997            0            0 1.50 1.5 0.7 0.5 0.90
+40            -25.970            0            0 1.60 1.9 2.5 1.1 1.00
+      sed_dep1    sed_dep2    sed_dep3     Area Time_elapsed Live_count2
+1  0.001022983 0.000389233 0.000416678 5.725553            7         448
+2  0.001003022 0.000663691 0.000578859 5.725553            7         224
+3  0.001127776 0.001025478 0.001185163 5.725553            7         320
+4  0.001384146 0.001384146 0.001023919 5.725553            8         288
+5  0.000626577 0.000410441 0.004848877 5.725553            8         448
+6  0.004292162 0.003469097 0.002342569 5.725553            8         288
+7  0.000606928 0.000547982 0.000299098 5.725553            8         192
+8  0.001395062 0.001194208 0.001766205 5.725553            8         400
+9  0.000696127 0.000568878 0.000484046 5.725553            7         608
+10 0.000484046 0.000973081 0.000765990 5.725553            7         304
+11 0.003305982 0.002475120 0.004775584 5.725553            7         192
+12 0.001472097 0.001843864 0.002008540 5.725553            7         272
+13 0.000449738 0.000366777 0.000521784 5.725553            8         352
+14 0.009027513 0.003471281 0.003375220 5.725553            8         512
+15 0.000606928 0.000401708 0.001085048 5.725553            8         336
+16 0.001135262 0.000864545 0.000825248 5.725553            8         160
+17 0.001639268 0.002510051 0.001307422 5.725553            7         512
+18 0.000983062 0.000543928 0.000828367 5.725553            7         336
+19 0.001781487 0.001566911 0.001130271 5.725553            7         448
+20 0.000685523 0.001740007 0.000768485 5.725553            8         528
+21 0.000831797 0.000362410 0.000558898 5.725553            8         256
+22 0.001718175 0.001943044 0.002482293 5.725553            8         432
+23 0.001034835 0.001320833 0.001050117 5.725553            8         352
+24 0.001309917 0.001226956 0.001536970 5.725553            8         416
+25          NA 0.000723573 0.000733554 5.725553            7         304
+26 0.000646226 0.000943140 0.003710185 5.725553            7         496
+27 0.001265006 0.001434671 0.000828367 5.725553            7         288
+28 0.000910392 0.000951873 0.001157094 5.725553            8         512
+29 0.001250971 0.001157094 0.001264070 5.725553            8         512
+30 0.001242238 0.000919125 0.001539153 5.725553            8         464
+31 0.000995537 0.002803223 0.000951873 5.725553            8         368
+32 0.000419174 0.000582913 0.000567631 5.725553            8         576
+33 0.002312940 0.003178732 0.002891798 5.725553            7         416
+34 0.000798426 0.000504006 0.000878268 5.725553            7         304
+35 0.001220094 0.001190153 0.000716088 5.725553            7         304
+36 0.000451921 0.001071949 0.000825248 5.725553            8         448
+37 0.001961133 0.002490090 0.001898756 5.725553            7         416
+38 0.000301281 0.000331846 0.000862362 5.725553            8         272
+39 0.000668058 0.001392879 0.000419174 5.725553            8         496
+40 0.000534883 0.000515234 0.000526150 5.725553            8          96
+   Dead_count2 SA_len1 SA_len2 SA_len3 SA_len4 SA_len5 SA_len6 SA_len7 SA_len8
+1            0   134.4   133.3   131.9   127.3   125.8   122.8   125.0   119.4
+2           16   131.0   119.8   117.1   118.5   118.2   113.0   110.3   109.9
+3            0   120.5   121.3   119.7   110.6   105.0   108.9   105.7   106.3
+4            0   167.2   161.0   162.0   156.7   148.4   145.1   144.0   140.7
+5           16    96.6    97.2    91.2    80.9    85.6    79.5    80.0    76.1
+6            0   156.8   151.2   150.5   150.9   149.7   144.0   145.8   143.2
+7            0    90.9    84.9    84.1    83.2    75.0    68.0    72.9    69.3
+8            0   161.7   157.6   149.7   151.1   139.8   141.3   133.0   133.5
+9            0   108.4   111.9   102.2   104.5   104.3    95.6    93.6    95.2
+10           0   119.9   122.6   120.6   115.8   114.1   113.8   107.3   107.8
+11           0   127.1   122.3   119.1   103.9    99.8    94.7    93.3    86.5
+12           0   145.3   146.5   134.6   126.8   118.3   115.9   114.5   111.7
+13           0    88.3    87.4    87.8    85.4    83.9    77.9    80.1    74.4
+14           0   158.0   158.6   155.8   155.9   155.9   153.7   159.0   153.2
+15           0   101.1    89.9    90.0    83.9    86.4    81.0    79.3    73.0
+16           0   100.9    91.7   133.5   139.4   121.6   142.6   128.8   138.1
+17          16   151.5   151.1   149.1   146.3   149.9   144.9   147.5   144.0
+18           0   125.4   123.1   119.1   118.8   117.9   117.0   116.2   113.8
+19          16   141.1   138.6   135.4   140.1   132.8   133.8   123.5   129.8
+20           0   132.8   134.4   127.2   125.5   125.4   123.9   122.7   122.0
+21          32   114.8   108.8   104.8   102.5   101.0    94.9    93.1    94.5
+22           0   146.6   148.4   147.4   138.9   138.8   133.0   108.3    93.6
+23           0   112.5   109.7   111.1   102.1    97.8    94.2    96.1    91.1
+24           0   162.5   166.2   164.1   162.4   162.4   160.6   163.5   157.5
+25           0   106.6   105.7   103.3   102.9    92.2    90.1    86.2    85.8
+26           0   125.3   115.8   114.0   113.0   108.8   104.5   104.5    96.6
+27          32   115.3   112.2   116.0   113.2   116.5   112.9    99.0    92.3
+28          32   145.5   149.0   151.6   137.2   141.6   134.5   130.3   139.3
+29          96   131.7   134.4   133.3   129.3   131.6   126.3   130.9   125.6
+30           0   134.7   134.6   136.5   127.9   127.3   128.3   126.1   124.5
+31          16   124.1   123.3   124.2   121.0   114.4   107.4   102.2   101.8
+32           0   133.4   137.5   133.6   129.8   130.0   125.5   125.6   131.9
+33           0   153.5   153.1   152.0   148.5   146.2   146.7   142.1   143.5
+34           0    93.8    91.2    94.4    91.9    84.3    83.7    82.5    81.3
+35           0    95.8    95.4    88.0    94.2    86.8    85.4    87.4    83.0
+36           0   133.9   119.6   133.7   123.4   123.9   124.1   122.7   120.2
+37          16   162.0   157.2   153.8   149.0   147.0   143.0   141.0   138.4
+38           0   140.9   129.8   127.3   128.9   124.5   122.7   118.6   119.0
+39           0   133.8   130.6   117.2   114.1   109.2   106.4   106.7   109.0
+40          48   127.2   120.6   107.3   101.8    95.6   135.9      NA      NA
+   SA_len9 SA_len10   sed_dep_av   sed_dep_sd      Category
+1    116.0    118.3 1.521079e-05 2.442016e-05          Crab
+2    103.0    101.1 1.867628e-05 2.442016e-05          Crab
+3     95.0    101.2 2.776540e-05 2.442016e-05          Crab
+4    144.8    140.5 2.759713e-05 2.136764e-05          Crab
+5     77.2     77.5 4.283353e-05 2.136764e-05          Crab
+6    147.3    141.0 7.352877e-05 2.136764e-05          Crab
+7     52.4     57.1 1.058128e-05 2.136764e-05          Crab
+8    127.5    108.3 3.169618e-05 2.136764e-05          Crab
+9     95.5     93.9 1.454674e-05 2.442016e-05        Mussel
+10   102.6    102.8 1.848952e-05 2.442016e-05        Mussel
+11    82.0     84.9 8.779927e-05 2.442016e-05 Crab + Mussel
+12   112.2    107.6 4.428353e-05 2.442016e-05        Mussel
+13    74.2     75.0 9.739227e-06 2.136764e-05        Mussel
+14   150.1    153.1 1.155202e-04 2.136764e-05        Mussel
+15    77.3     73.4 1.523640e-05 2.136764e-05        Mussel
+16   141.9    100.1 2.055882e-05 2.136764e-05        Mussel
+17   145.2    140.6 4.538336e-05 2.442016e-05 Crab + Mussel
+18   112.3    112.7 1.958935e-05 2.442016e-05 Crab + Mussel
+19   124.5    117.5 3.724880e-05 2.442016e-05        Mussel
+20   118.6    115.5 2.324386e-05 2.136764e-05 Crab + Mussel
+21    91.2     91.3 1.275790e-05 2.136764e-05 Crab + Mussel
+22   102.4    103.5 4.470829e-05 2.136764e-05 Crab + Mussel
+23    88.7     88.6 2.478498e-05 2.136764e-05 Crab + Mussel
+24   153.5    145.6 2.964665e-05 2.136764e-05 Crab + Mussel
+25    83.2     78.6 1.817825e-05 2.442016e-05          None
+26    96.0     97.1 4.407602e-05 2.442016e-05          None
+27    94.4     94.3 2.934251e-05 2.442016e-05          None
+28   139.9    132.7 2.197284e-05 2.136764e-05          None
+29   125.2    121.7 2.672329e-05 2.136764e-05          None
+30   124.6    124.3 2.692983e-05 2.136764e-05          None
+31   101.7     96.6 3.457187e-05 2.136764e-05          None
+32   126.2    129.1 1.142334e-05 2.136764e-05          None
+33   144.2    140.8 6.972477e-05 2.442016e-05          None
+34    81.0     71.6 1.813674e-05 2.442016e-05          None
+35    86.0     85.4 2.600152e-05 2.442016e-05          None
+36   119.1    115.5 1.709528e-05 2.136764e-05          None
+37   142.5    138.8 5.281236e-05 2.442016e-05          None
+38   113.4    105.7 1.088315e-05 2.136764e-05          None
+39   108.4    106.2 1.804856e-05 2.136764e-05          None
+40      NA       NA 1.147100e-05 2.136764e-05          None</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>fig3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(data2, <span class="fu">aes</span>(<span class="at">x =</span> Category, <span class="at">y =</span> sed_dep_av, <span class="at">fill =</span> Category))<span class="sc">+</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>()<span class="sc">+</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"BuPu"</span>)<span class="sc">+</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">color =</span> <span class="st">"#808080"</span>, <span class="at">size =</span> <span class="fl">1.2</span>, <span class="at">alpha =</span> <span class="fl">0.9</span>)<span class="sc">+</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Treatment"</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Sediment Deposition (g/cm²/day)"</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">+</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fig3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="proposed_analysis_files/figure-html/fig%203-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>For figure 3 I wanted another way to visualize treatment type to sediment deposition through a box plot. I overlaid jitter to demonstrate similar to a violin plot where the distribution of the data mainly lies for each Treatment. This time I did not add elevation to this plot. I think with this plot its hard to tell if there is a relationship between treatment and sediment deposition. However, it may be helpful to look at the final density of crab and mussel to sediment deposition when considering my models.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>data3 <span class="ot">&lt;-</span> <span class="fu">subset</span>(data2, Burrow_count <span class="sc">&gt;</span><span class="dv">0</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(data3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Site_ID Treatment Replicate Crab Mussel Date_start  Date_end Latitude
+1      cc1        cc         1  yes     no   6/3/2026 8/24/2026 42.73986
+2      cc2        cc         2  yes     no   6/3/2026 8/24/2026 42.73973
+3      cc3        cc         3  yes     no   6/3/2026 8/24/2026 42.74014
+4      cc4        cc         4  yes     no   6/3/2026 8/25/2026 42.74062
+5      cc5        cc         5  yes     no   6/3/2026 8/25/2026 42.73954
+6      cc6        cc         6  yes     no   6/3/2026 8/25/2026 42.73988
+7      cc7        cc         7  yes     no   6/3/2026 8/25/2026 42.74012
+8      cc8        cc         8  yes     no   6/3/2026 8/25/2026 42.74017
+17    mcc1       mcc         1  yes    yes   6/3/2026 8/24/2026 42.73978
+18    mcc2       mcc         2  yes    yes   6/3/2026 8/24/2026 42.73970
+19    mcc3       mcc         3   no    yes   6/3/2026 8/24/2026 42.74031
+20    mcc4       mcc         4  yes    yes   6/3/2026 8/25/2026 42.74059
+21    mcc5       mcc         5  yes    yes   6/3/2026 8/25/2026 42.73958
+22    mcc6       mcc         6  yes    yes   6/3/2026 8/25/2026 42.73993
+23    mcc7       mcc         7  yes    yes   6/3/2026 8/25/2026 42.73993
+24    mcc8       mcc         8  yes    yes   6/3/2026 8/25/2026 42.74017
+25   ncnc1      ncnc         1   na     na   6/3/2026 8/24/2026 42.73985
+   Longitude Live_count1 Dead_count1 RTK_number  RTK_lat  RTK_long Elevation
+1  -70.83686         192          80         17 42.73983 -70.83682     1.184
+2  -70.83698         288          64         22 42.73970 -70.83696     1.140
+3  -70.83689         320          80         15 42.74008 -70.83684     1.135
+4  -70.83655         192           0          2 42.74059 -70.83651     0.983
+5  -70.83701         496         176         29 42.73951 -70.83698     1.187
+6  -70.83670         272          64         34 42.73985 -70.83668     0.753
+7  -70.83658         160         128         39 42.74010 -70.83658     1.273
+8  -70.83642         384         160         43 42.74018 -70.83643     1.052
+17 -70.83686         464          32         19 42.73975 -70.83683     0.827
+18 -70.83709         736         192         23 42.73965 -70.83706     1.034
+19 -70.83658         448          32         12 42.74025 -70.83654     1.068
+20 -70.83645         720          80          5 42.74054 -70.83642     0.948
+21 -70.83695         112          64         30 42.73955 -70.83693     1.053
+22 -70.83668         400          64         35 42.73988 -70.83668     0.927
+23 -70.83667         416          64         36 42.73993 -70.83667     1.160
+24 -70.83643         336          48         41 42.74016 -70.83645     1.002
+25 -70.83687         176          64         18 42.73981 -70.83682     1.184
+   Ellipsoidal_height Burrow_count Mussel_count ss1 ss2 ss3 ss4  ss5
+1             -25.742           48            0 2.7 3.1 2.3 1.4 1.30
+2             -25.786           48            0 1.9 3.8 2.6 2.4 2.40
+3             -25.792          112            0 1.8 3.0 2.4 1.3 1.20
+4             -25.943           48            0 1.1 1.3 1.5 2.0 1.50
+5             -25.739           48            0 2.1 2.1 3.1 3.2 1.80
+6             -26.173           96            0 0.8 1.1 1.0 1.0 1.60
+7             -25.652           96            0 3.0 2.1 3.2 1.4 1.90
+8             -25.874           80            0 1.2 1.2 1.8 1.0 0.50
+17            -26.100           32           48 1.4 0.9 1.6 1.9 1.60
+18            -25.893           48           48 1.5 1.5 1.9 1.6 1.40
+19            -25.858           48           48 0.6 0.6 1.0 1.0 4.10
+20            -25.978           32           80 1.5 1.6 2.8 2.2 1.30
+21            -25.873           64           48 2.0 3.4 1.0 1.2 1.40
+22            -25.999           96           48 1.2 1.5 2.6 1.3 3.40
+23            -25.766           64           64 2.8 3.4 1.6 1.1 0.70
+24            -25.924           32           48 1.2 1.5 1.2 1.9 0.90
+25            -25.742           64            0 2.6 2.7 2.4 1.6 2.15
+      sed_dep1    sed_dep2    sed_dep3     Area Time_elapsed Live_count2
+1  0.001022983 0.000389233 0.000416678 5.725553            7         448
+2  0.001003022 0.000663691 0.000578859 5.725553            7         224
+3  0.001127776 0.001025478 0.001185163 5.725553            7         320
+4  0.001384146 0.001384146 0.001023919 5.725553            8         288
+5  0.000626577 0.000410441 0.004848877 5.725553            8         448
+6  0.004292162 0.003469097 0.002342569 5.725553            8         288
+7  0.000606928 0.000547982 0.000299098 5.725553            8         192
+8  0.001395062 0.001194208 0.001766205 5.725553            8         400
+17 0.001639268 0.002510051 0.001307422 5.725553            7         512
+18 0.000983062 0.000543928 0.000828367 5.725553            7         336
+19 0.001781487 0.001566911 0.001130271 5.725553            7         448
+20 0.000685523 0.001740007 0.000768485 5.725553            8         528
+21 0.000831797 0.000362410 0.000558898 5.725553            8         256
+22 0.001718175 0.001943044 0.002482293 5.725553            8         432
+23 0.001034835 0.001320833 0.001050117 5.725553            8         352
+24 0.001309917 0.001226956 0.001536970 5.725553            8         416
+25          NA 0.000723573 0.000733554 5.725553            7         304
+   Dead_count2 SA_len1 SA_len2 SA_len3 SA_len4 SA_len5 SA_len6 SA_len7 SA_len8
+1            0   134.4   133.3   131.9   127.3   125.8   122.8   125.0   119.4
+2           16   131.0   119.8   117.1   118.5   118.2   113.0   110.3   109.9
+3            0   120.5   121.3   119.7   110.6   105.0   108.9   105.7   106.3
+4            0   167.2   161.0   162.0   156.7   148.4   145.1   144.0   140.7
+5           16    96.6    97.2    91.2    80.9    85.6    79.5    80.0    76.1
+6            0   156.8   151.2   150.5   150.9   149.7   144.0   145.8   143.2
+7            0    90.9    84.9    84.1    83.2    75.0    68.0    72.9    69.3
+8            0   161.7   157.6   149.7   151.1   139.8   141.3   133.0   133.5
+17          16   151.5   151.1   149.1   146.3   149.9   144.9   147.5   144.0
+18           0   125.4   123.1   119.1   118.8   117.9   117.0   116.2   113.8
+19          16   141.1   138.6   135.4   140.1   132.8   133.8   123.5   129.8
+20           0   132.8   134.4   127.2   125.5   125.4   123.9   122.7   122.0
+21          32   114.8   108.8   104.8   102.5   101.0    94.9    93.1    94.5
+22           0   146.6   148.4   147.4   138.9   138.8   133.0   108.3    93.6
+23           0   112.5   109.7   111.1   102.1    97.8    94.2    96.1    91.1
+24           0   162.5   166.2   164.1   162.4   162.4   160.6   163.5   157.5
+25           0   106.6   105.7   103.3   102.9    92.2    90.1    86.2    85.8
+   SA_len9 SA_len10   sed_dep_av   sed_dep_sd      Category
+1    116.0    118.3 1.521079e-05 2.442016e-05          Crab
+2    103.0    101.1 1.867628e-05 2.442016e-05          Crab
+3     95.0    101.2 2.776540e-05 2.442016e-05          Crab
+4    144.8    140.5 2.759713e-05 2.136764e-05          Crab
+5     77.2     77.5 4.283353e-05 2.136764e-05          Crab
+6    147.3    141.0 7.352877e-05 2.136764e-05          Crab
+7     52.4     57.1 1.058128e-05 2.136764e-05          Crab
+8    127.5    108.3 3.169618e-05 2.136764e-05          Crab
+17   145.2    140.6 4.538336e-05 2.442016e-05 Crab + Mussel
+18   112.3    112.7 1.958935e-05 2.442016e-05 Crab + Mussel
+19   124.5    117.5 3.724880e-05 2.442016e-05        Mussel
+20   118.6    115.5 2.324386e-05 2.136764e-05 Crab + Mussel
+21    91.2     91.3 1.275790e-05 2.136764e-05 Crab + Mussel
+22   102.4    103.5 4.470829e-05 2.136764e-05 Crab + Mussel
+23    88.7     88.6 2.478498e-05 2.136764e-05 Crab + Mussel
+24   153.5    145.6 2.964665e-05 2.136764e-05 Crab + Mussel
+25    83.2     78.6 1.817825e-05 2.442016e-05          None</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>fig4 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(data3, <span class="fu">aes</span>(<span class="at">x =</span> Burrow_count, <span class="at">y =</span> ss1, <span class="at">color =</span> Treatment))<span class="sc">+</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Burrow Count (m²)"</span>,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Soil Strength at 0-10 cm (kPa)"</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">+</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_brewer</span>(<span class="at">palette =</span> <span class="st">"Paired"</span>)<span class="sc">+</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fig4)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="proposed_analysis_files/figure-html/fig%204-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>For figure 4, I wanted to look again at soil strength, choosing the top 10 cm as this is the lower depth that fiddler crab burrows range from, so I would expect to see some effect here that as burrow presence decreases soil strength.Where plots with mussels and crabs (mcc), there would some stability in soil strength regardless of burrow count as mussels would predicative offset the negative impacts. I choose to filter out all treatments that did not have burrow counts to remove treatments without crabs in them. I was hoping this would help describe if there is a relationship with soil strength to burrow density as while all cages were maintained at similar densities throughout the experimental period even small differences in burrow density size may have an effect on soil strength. I am not doing this with mussel density as while the 1/16th meter quadrat mussel density was different, the over 1m squared mussel density was held the same for the entire experimental period.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>fig5 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> sed_dep_av, <span class="at">y =</span> ss1, <span class="at">color =</span> Treatment))<span class="sc">+</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Sediment Deposition (g/cm²/day)"</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Soil Strength at 0-10 cm"</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">+</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fig5)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="proposed_analysis_files/figure-html/fig%205-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>I did not think I would see any relationship for sediment deposition and soil strength, however they do play a role with each other where a weaker soil strength could potentially mean a higher erosion potential and sediment re-suspension. Thus, the sediment deposition may be higher, but I did not think that this would be seen within a simple ggplot.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>fig6 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> Live_count2, <span class="at">y =</span> sed_dep_av, <span class="at">color =</span> Elevation))<span class="sc">+</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Live Stem Count"</span>,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Sediment Deposition (g/cm²/day)"</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">+</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_viridis</span>()<span class="sc">+</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fig6)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="proposed_analysis_files/figure-html/fig%206-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Aboveground biomass is a factor that can influence sediment deposition, the more stems there are, the more sediments can get trapped by slowing down tidal flow, allowing particles to settle out of the water column. The plants themselves overtime can also increase sediment accretion when they die and get buried, however this is a long - term process that was not measured by my methods. So in figure 6 I looked at how the live stem count at the end of the experimental period may have predicted sediment deposition, while having elevation shown via color gradient. My thinking behind this was similar to other figures made in that elevation still plays a role in sediment deposition and in my model should be treated at an interaction. I choose a scatter plot again as I did not separate these by treatment as well, but would be something I would consider in my model as that would help to answer my main question about individual treatments. This was just not possible in a simple ggplot.</p>
+</section>
+<section id="proposed-analytical-approach" class="level2">
+<h2 class="anchored" data-anchor-id="proposed-analytical-approach">Proposed analytical approach</h2>
+<p><strong>Considering the study design and data, and your research questions, objectives, and/or testable hypotheses, describe your proposed analytical approach. Include your response and predictor variables, type of analysis (linear regression, generalized linear regression, gam, etc.), model selection criteria, etc. Provide sufficient detail to evaluate your proposed approach in the context of your data and questions of interest. If you have questions or uncertain about anything, highlight that here as well. [2.5 pts]</strong></p>
+<p>My response variables will be soil strength and sediment deposition where predictor variables will be stem count, presence v absence of fiddler crabs/treatment type, and elevation. First, I will need to conduct a general linear model of some degree to evaluate if I can remove the reference plots from the rest of my analysis. To do so, I plan on conducting a t-test comparing the control to the reference plots for each of my response variables. If they are not significantly different, then I can remove the reference plots from further analysis. Here I am only testing potential caging effects on the response variables. Any reference plots with organisms in them will be removed from this analysis.</p>
+<p>For the soil strength measurements, I plan on comparing mixed-effects models as measurements at each depth came from the same sampling location, thus they are not independent within each cage. I would plan on soil strength (at each depth) and treatment being fixed effects with each cage being a random effect. Here I would also add potentially other predictor variables like stem count to see if it strengthens the model. From the mixed-model, I would look at the ICC (inter cluster correlation coefficient) to see how the variance is explained by the random vs.&nbsp;fixed effects. If the random effects is low, I plan to make a generalized linear model having depth and treatment as the fixed effects and plots acting as the independent replicates for each treatment. For each treatment I will use simple linear regressions to fit them to either linear, polynomial, or exponential curves to create models of strength vs.&nbsp;depth. For all of the soil strength models I plan to compare via AIC values after looking at diagnostics from residual plots and qqplots. By singling out individual treatments via mixed-effect models by treatment, I can test which treatments are different overall from another and if treatment effects change with depth. This will help to answer if the presence or absence of fiddler crabs and mussels have an effect on erosion potential. Then, by testing the fit to linear, exponential, or polynomial models to each treatment, those models will help describe how soil strength changes with depth for each treatment and describe the pattern that is shown with depth.</p>
+<p>Analysis of sediment deposition will answer how the presence or absence of fiddler crabs and mussels will impact vertical accretion. For this, I plan on conducting either multiple t-tests or a one-way ANOVA to compare sediment deposition between treatments if the data is normal. If the data is not normal I will look at multiple linear models to compare treatment to sediment deposition. I will also include elevation and stem count to some of these models to find the best model. Because stem count and treatment type may have an interaction, I will add an interaction term too. I will use VIF to check for any colinearity within the models I create and correct standard error if VIF is high. Using performance and predict packages in R, I will test model fit for each one then use AIC to determine which model best describes the data. If the data is non-normal I plan on moving toward generalized linear models. I do need help in figuring out which generalized linear models I should maybe look at. I know this data is on the zero to positive infinity scale but it is not continuous so I would not be able to use gamma. If I could get a suggested on what GLM I could use for this I think this is where I get stuck. I am just currently uncertain as to what to do if I don’t get normal data here as I don’t want to transform the raw data.</p>
+</section>
+<section id="ai-statement" class="level2">
+<h2 class="anchored" data-anchor-id="ai-statement">AI statement</h2>
+<p><strong>If you used AI for this assignment, please describe your use, including:</strong></p>
+<p><strong>1. What tool or service did you use?</strong> I used Copilots framework to help with my code without giving it my data or column headers. <strong>2. What was the specific purpose or use?</strong> I used AI when making figure 4. I could not figure out how to organize the data into one category column through filtering with the mutate function.</p>
+<p><strong>3. How did this use enhance your understanding of the topic/code?</strong> It helped with my understanding of using the filter function within mutate and how I can call specific labels within a column to get the treatments I want.</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
