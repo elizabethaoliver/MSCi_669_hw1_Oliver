@@ -1,0 +1,119 @@
+---
+title: "ARA 669 - Assignment 3"
+author: "Elizabeth Oliver"
+date: "10/25/2026"
+output: html_document
+---
+
+## Overview
+
+The goal of this assignment is to apply the tools and approaches we've learned during this course to critique, and then expand on, a statistical analysis. 
+
+Please submit this assignment via GitHub by 2 November.   
+
+## Read & reflect
+
+**Read the article "Do native land crabs hinder forest regeneration on Socorro Island?" (Luna-Zuniga et al. 2025). Describe: \[2 pt\]**
+
+1. The primary question(s) the authors are trying to answer.
+2. The experimental and sampling design. 
+3. The statistical approach used. 
+
+**Imagine you are reviewing this manuscript prior to its publication. Provide a constructive critique of the statistical analyses as they relate to the experimental and sampling design. What did they do well? What would be improved? \[3 pt\]**
+
+
+## Re-analysis
+
+The data associated with this paper are available here: https://figshare.com/articles/dataset/Luna-Zuniga_etal_Regeneration_Socorro-Island_xlsx/29144249/1?file=54804050. Note that the file has several header lines; remove these in Excel prior to importing the data into R or use [readxl](https://readxl.tidyverse.org/articles/multiple-header-rows.html).
+
+Based on your critique of the statistical approach taken by Luna-Zuniga et al. (2025), re-analyze the data to evaluate the effect of *Johngarthia oceanica* on the structure and composition of these island forests, specifically focusing on the seed predation experiment.
+
+**Use the code chunk below to load packages and the data. \[0.5 pt\]**
+
+```{r setup}
+#| message: false
+#| error: false
+
+# Paste your code in here!
+
+```
+
+## Data exploration
+
+**Explore the data visually using ggplot2. \[0.5 pt\]**
+
+```{r plotting}
+#| message: false
+#| error: false
+
+# Paste your code in here!
+
+```
+
+## Model development
+
+**Based on the experimental and sampling design, which variables should be considered as fixed effects? Which could be considered as random effects? What distributions should be considered? \[1 pt\]**
+
+## Analysis
+
+**Develop a set of generalized linear mixed-effects models that reflect the structures described above. Include a model that includes the same response variables as Luna-Zuniga et al. (2025). \[1 pt\]**
+
+```{r models}
+#| message: false
+#| error: false
+
+# Paste your code in here!
+
+```
+
+**Evaluate the models using an approach covered as part of this class. \[0.5 pt\]**
+
+```{r modelselection}
+#| message: false
+#| error: false
+
+# Paste your code in here!
+
+```
+
+**Check your model diagnostics (i.e., are the model assumptions met) using an approach covered as part of this class. \[1 pt\]**
+
+```{r diagnostics}
+#| message: false
+#| error: false
+
+# Paste your code in here!
+
+```
+
+**Which model would you choose as your final model? Why is that model preferred over the others? \[1 pt\]**
+
+
+**Generate model predictions (using the ggeffects package) and plot the predictions over observed data. Describe your results. \[1.5 pt\]**
+
+```{r predictions}
+#| message: false
+#| error: false
+
+# Paste your code in here!
+
+```
+
+
+## Conclusions
+
+**How do your results compare to those presented by Luna-Zuniga et al. (2025)? \[1 pt\]**
+
+
+**Provide summary statements about the quality of your analysis, including any potential limitations or caveats. \[1 pt\]**
+
+
+## AI statement
+
+*If you used AI for this assignment, please describe your use, including:*
+
+*1.  What tool or service did you use?*
+
+*2.  What was the specific purpose or use?*
+
+*3.  How did this use enhance your understanding of the topic/code?*
