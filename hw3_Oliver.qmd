@@ -16,11 +16,20 @@ Please submit this assignment via GitHub by 2 November.
 **Read the article "Do native land crabs hinder forest regeneration on Socorro Island?" (Luna-Zuniga et al. 2025). Describe: \[2 pt\]**
 
 1. The primary question(s) the authors are trying to answer.
-2. The experimental and sampling design. 
+There were three main objectives from this paper: to identify recruitment of tree species, to access recruitment variation across forest types in the island, and to experimentally test is land crabs are affecting this recruitment. 
+
+2. The experimental and sampling design.
+Sampling events to described the vegetation by forest type, species, and categorical description of life stages  were conducted in 2023 and 2024. A total of 18 plots were evaluated for species type, life stage of seedling, sapling, and adult), perimeter at breast height to gain diameter at breast height. This data would be compared to a similar study conducted in 1993-1995. 
+
+An experimental design was utilized to examine the land crab impact on seedlings by means of predation. A paired cage exclusion design was created. There were 17 sites and each site had 10 paired cages (control and exclusion). However, not all species of vegetation were presented at the sites equally due to a limitation in seed availability. Not all species were tested in the same year as well. In these cages the counts of seedlings, were evaluated after set time intervals to determin germination and survival percentages within each cage. 
+
 3. The statistical approach used. 
+Two generalized mixed models were used with a negative binomial distribution to access 1. vegetation structure of species at differing life stages and forest types and 2. predation and survival of seedlings when the land crab J. oceanica was present vs. absent. 
 
 **Imagine you are reviewing this manuscript prior to its publication. Provide a constructive critique of the statistical analyses as they relate to the experimental and sampling design. What did they do well? What would be improved? \[3 pt\]**
+I think that it is interesting that they did not consider time in their model for either GLMM they created. For the first GLMM looking at vegetation structure, would be harder as there are only 2 plots that were completed in November 2024, which is not enough replicates during an individual time interval. Also that additional sampling period in 2024 does not even cover all three types or forest as it only was preformed in TDF. I would encourage the removal of those two replicates as time could not be considered in that model due to having low replicates. 
 
+Secondly, for the predation of crab GLMM, the authors do not use all species in each year, which is more of a problem within the experimental design itself. I would have a question about which forest type were the plots placed in because that may be an interaction with species type that may need to be considered in the model. If they are using different forest types in their experimental design, I would think they would have less replicates than they are presenting or some type of nested design in their model would need to be considered. In terms of dealing with differences in the number of species used in the replicates I would encourage the authors to add species as a random effect as well to account for the differences within them. Even, potentially considering a model with a nested design for site and species as not all sites have each species. 
 
 ## Re-analysis
 
@@ -34,8 +43,26 @@ Based on your critique of the statistical approach taken by Luna-Zuniga et al. (
 #| message: false
 #| error: false
 
-# Paste your code in here!
+library(glmmTMB)
+library(tidyverse)
+library(DHARMa)
+library(performance)
 
+dat <- read.csv('Luna-Zuniga_etal_Socorro_Island.csv') #seed_predation data
+
+summary(dat)
+
+dat <- dat %>%
+  mutate(
+    sitef = factor(Site),
+    speciesf = factor(Species),
+    idf = factor(ID_treatment),
+    treatmentf = factor(Treatment),
+    prop = Remaining/Total_seeds
+  )
+str(dat)
+
+pairs(dat[, 6:15])
 ```
 
 ## Data exploration
@@ -46,13 +73,57 @@ Based on your critique of the statistical approach taken by Luna-Zuniga et al. (
 #| message: false
 #| error: false
 
-# Paste your code in here!
+fig1 <- ggplot(dat, aes(x = treatmentf, y = prop, fill = treatmentf))+
+  geom_violin()+
+  facet_wrap(~ speciesf)+
+  labs(
+    x = "Treatment",
+    y = "Proportion of seedlings remaining"
+  )+
+  theme_classic()
+
+print(fig1)
+
+fig2 <- ggplot(dat, aes(x = speciesf, y = Removed, color = treatmentf))+
+  geom_point()+
+    labs(
+    x = "Vegetation Species",
+    y = "Number of Seeds Removed (loss due to predation)"
+  )+
+  theme_classic()
+
+print(fig2)
+
+fig3 <- ggplot(dat, aes(x = sitef, y = Removed, color = speciesf))+ 
+  geom_point()+
+  labs(
+    x = "Site",
+    y = "Number of Seeds Removed (loss due to predation)"
+  )+
+  theme_classic()
+
+print(fig3)
+
+fig4 <- ggplot(dat, aes(x = sitef, y = speciesf))+
+  geom_point()+
+  theme_classic()#site and species are not independent of each other. 
+
+print(fig4)
 
 ```
 
 ## Model development
 
 **Based on the experimental and sampling design, which variables should be considered as fixed effects? Which could be considered as random effects? What distributions should be considered? \[1 pt\]**
+
+Depending on how we choose to categorize our response variable the distributions could be different: 
+1. counts: poisson or negative binomial
+2. proportion: binomial (what was done in the paper)
+For the sake of comparing the model made in the paper, I will evaluate using a binomial distribution so the response variables are the same. 
+
+Fixed effects: proportion of remaining seeds/total seeds, remaining seeds, removed seeds, speciesf, treatmentf
+
+Random effects: idf, sitef, speciesf
 
 ## Analysis
 
@@ -62,7 +133,24 @@ Based on your critique of the statistical approach taken by Luna-Zuniga et al. (
 #| message: false
 #| error: false
 
-# Paste your code in here!
+m0 <- glmmTMB(prop ~ treatmentf, data = dat, family = binomial(link = "logit"))
+
+m1 <- glmmTMB(prop ~ treatmentf*speciesf, data = dat, family = binomial(link = "logit"))#treatment and species as a main effects and interaction
+
+m2 <- glmmTMB(prop ~ treatmentf:speciesf, data = dat, family = binomial(link = "logit"))#treatment and species as an interaction only
+
+m3 <- glmmTMB(prop ~ treatmentf + speciesf + (1|sitef/speciesf), data = dat, family = binomial(link = "logit")) #site will affect intercept, species within a site will effect the intercept
+
+m4 <- glmmTMB(prop ~ treatmentf*speciesf + (1|idf), data = dat, family = binomial(link = "logit")) #papers model 
+#threw a warming when using the paper's model may have to change something
+
+m5 <- glmmTMB(prop ~ treatmentf + speciesf + (1|sitef), data = dat, family = binomial(link = "logit")) #site may affect the baseline outcome of proportion of seedlings predated on
+
+m6 <- glmmTMB(prop ~ treatmentf*speciesf + (1|sitef/speciesf), data = dat, family = binomial(link = "logit")) #threw an error -> don't use this model 
+
+m7 <- glmmTMB(prop ~ treatmentf + speciesf + (1|idf), data = dat, family = binomial(link = "logit")) #individual sites are not random due to paired plots, individual plot may affect proportion of seedlings counted for
+
+m8 <- glmmTMB(prop ~ treatmentf + speciesf + (1|sitef/speciesf) + (1|idf), data = dat, family = binomial(link = "logit")) #broke the model -> do not use this model
 
 ```
 
