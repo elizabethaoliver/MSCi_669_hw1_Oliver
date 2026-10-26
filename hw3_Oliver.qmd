@@ -47,6 +47,8 @@ library(glmmTMB)
 library(tidyverse)
 library(DHARMa)
 library(performance)
+library(GGally)
+library(car)
 
 dat <- read.csv('Luna-Zuniga_etal_Socorro_Island.csv') #seed_predation data
 
@@ -63,6 +65,9 @@ dat <- dat %>%
 str(dat)
 
 pairs(dat[, 6:15])
+
+#look for colinearlity
+GGally::ggpairs(dat[, 6:12]) #species and site look to be co linear
 ```
 
 ## Data exploration
@@ -152,6 +157,10 @@ m7 <- glmmTMB(prop ~ treatmentf + speciesf + (1|idf), data = dat, family = binom
 
 m8 <- glmmTMB(prop ~ treatmentf + speciesf + (1|sitef/speciesf) + (1|idf), data = dat, family = binomial(link = "logit")) #broke the model -> do not use this model
 
+m9 <- glmmTMB(prop ~ treatmentf + (1|speciesf), data = dat, family = binomial(link = "logit"))
+
+m10 <- glmmTMB(prop ~ treatmentf + (1|speciesf) + (1|treatmentf), data = dat, family = binomial(link = "logit"))
+
 ```
 
 **Evaluate the models using an approach covered as part of this class. \[0.5 pt\]**
@@ -160,7 +169,11 @@ m8 <- glmmTMB(prop ~ treatmentf + speciesf + (1|sitef/speciesf) + (1|idf), data 
 #| message: false
 #| error: false
 
-# Paste your code in here!
+AIC(m0, m1, m2, m3, m5, m7, m9, m10) %>%
+  arrange(AIC) %>%
+  print()
+
+#m1 has the lowest AIC, continuing to now check the model diagnostics
 
 ```
 
@@ -170,7 +183,10 @@ m8 <- glmmTMB(prop ~ treatmentf + speciesf + (1|sitef/speciesf) + (1|idf), data 
 #| message: false
 #| error: false
 
-# Paste your code in here!
+summary(m1)
+
+check_model(m1)
+#question about check_model(m1). I am confused about the VIF? it is super high is it saying that treatment is super colinear becuase there are only two characters?
 
 ```
 
