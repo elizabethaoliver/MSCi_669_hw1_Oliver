@@ -1,0 +1,119 @@
+---
+title: "ARA 669 - Assignment 4"
+author: "Your name here"
+date: "today's date here"
+output: html_document
+---
+
+## Overview
+
+The goal of this assignment is to apply the tools and approaches we've learned during this course to critique, and then expand on, a statistical analysis. 
+
+Please submit this assignment via GitHub by 20 November.   
+
+## Read & reflect
+
+**Read the article "Seascape ecology of juvenile gadoid nursery areas" (Walker-Milne et al. 2025). Describe: \[2 pt\]**
+
+1. The primary question(s) the authors are trying to answer.
+2. The experimental and sampling design. 
+3. The statistical approach used. 
+
+**Imagine you are reviewing this manuscript prior to its publication. Provide a constructive critique of the statistical analyses as they relate to the experimental and sampling design. What did they do well? What would be improved? \[3 pt\]**
+
+
+## Re-analysis
+
+The data associated with this paper are available here: https://datadryad.org/dataset/doi:10.5061/dryad.fbg79cp7n.
+
+Considering your critique of the statistical approach taken, re-analyze the data, focusing on MaxN (the maximum number of individuals present in the frame at one time during the video) as the response variable. For the purposes of this assignment, don't worry about the AUC or data splitting to test for accuracy, just use the full dataset. 
+
+**Use the code chunk below to load packages and the data. \[0.5 pt\]**
+
+```{r setup}
+#| message: false
+#| error: false
+
+# Paste your code in here!
+
+```
+
+## Data exploration
+
+**Explore the data visually using ggplot2. \[0.5 pt\]**
+
+```{r plotting}
+#| message: false
+#| error: false
+
+# Paste your code in here!
+
+```
+
+## Model development
+
+**Based on the experimental and sampling design, which variables should be considered as fixed effects? Which could be considered as random effects? What distributions should be considered? \[1 pt\]**
+
+## Analysis
+
+**Develop a set of generalized additive mixed-effects models that reflect the structures described above. \[1 pt\]**
+
+```{r models}
+#| message: false
+#| error: false
+
+# Paste your code in here!
+
+```
+
+**Evaluate the models using an approach covered as part of this class. \[0.5 pt\]**
+
+```{r modelselection}
+#| message: false
+#| error: false
+
+# Paste your code in here!
+
+```
+
+**Check your model diagnostics (i.e., are the model assumptions met) using an approach covered as part of this class. \[1 pt\]**
+
+```{r diagnostics}
+#| message: false
+#| error: false
+
+# Paste your code in here!
+
+```
+
+**Which model would you choose as your final model? Why is that model preferred over the others? \[1 pt\]**
+
+
+**Generate model predictions (using the ggeffects package) and plot the predictions over observed data. Describe your results. \[1.5 pt\]**
+
+```{r predictions}
+#| message: false
+#| error: false
+
+# Paste your code in here!
+
+```
+
+
+## Conclusions
+
+**How do your results compare to those presented by Walker-Milne et al. (2025)? \[1 pt\]**
+
+
+**Provide summary statements about the quality of your analysis, including any potential limitations or caveats. \[1 pt\]**
+
+
+## AI statement
+
+*If you used AI for this assignment, please describe your use, including:*
+
+*1.  What tool or service did you use?*
+
+*2.  What was the specific purpose or use?*
+
+*3.  How did this use enhance your understanding of the topic/code?*

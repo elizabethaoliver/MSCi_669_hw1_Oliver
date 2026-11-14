@@ -1,0 +1,381 @@
+---
+title: "ARA 669 - Preliminary Analysis"
+author: "Elizabeth Oliver"
+date: "November, 2026"
+output: html_document
+editor: 
+  markdown: 
+    wrap: sentence
+---
+
+```{r setup}
+#| message: false
+#| error: false
+library(tidyverse)
+library(dplyr)
+library(viridis)
+library(glmmTMB)
+library(lme4)
+library(car)
+library(performance)
+library(ggeffects)
+
+dat <- read.csv('Fiddler_cages_marsh_stability_working.csv') 
+summary(dat)
+
+ss_dat <- read.csv('Fiddler_cages_soil_strength_2026_working.csv')
+```
+
+Need to make the NA values true NA values so the string is read as a numeric rather than chr so that I can calculate means.
+
+```{r str data}
+#| message: false
+#| error: false
+
+dat <- dat %>%
+  mutate(sed_dep1 = as.numeric(na_if(sed_dep1, "NA")))
+
+str(dat)
+
+ss_dat <- ss_dat[,-c(11:121)] #remove columns that uploaded as NA. I don't know why this file did this
+```
+
+Before making graphs I need to do some calculations.
+Each site there were 3 replicates of sediment deposition tubes to get a mean of sediment deposition.
+So I need to calculate the mean than find the deposition rate per area per time so I can compare it across sites.
+
+```{r mean}
+cols <- c("sed_dep1", "sed_dep2", "sed_dep3") #make a string to get the mean
+
+dep_av <- rowMeans(dat[cols], na.rm = TRUE) #mean while ignoring the NA
+
+dat <- dat %>%
+  mutate(
+    sed_dep_av = (dep_av/(Area * Time_elapsed)), #sediment deposition/cm^2/day
+    sed_dep_sd = sd(dep_av)/(Area * Time_elapsed) #area and time are constants between the 3 sediment deposition used for averages thus there is no variance between them. 
+  )
+```
+
+Currently, mussel, crab, and stem counts are referencing a 1/16 meter squared plot.For ease of comparison, I am going to extrapolate it to a meter square density
+
+```{r meter-squared}
+dat <- dat %>%
+  mutate(
+    Live_count1 = Live_count1*16,
+    Dead_count1 = Dead_count1*16,
+    Mussel_count = Mussel_count*16,
+    Burrow_count = Burrow_count*16, 
+    Live_count2 = Live_count2*16,
+    Dead_count2 = Dead_count2*16, 
+    Crabf = factor(Crab),
+    Musself = factor(Mussel),
+    Treatmentf = factor(Treatment),
+    Site_IDF = factor(Site_ID),
+    Replicatef = factor(Replicate)) %>%
+  mutate(
+    Category = case_when(
+      Crab == "yes" & Mussel == "no" ~ "Crab",
+      Crab == "no" & Mussel == "yes" ~ "Mussel",
+      Crab == "yes" & Mussel == "yes" ~ "Crab + Mussel",
+      TRUE ~ "None"
+    )
+  )
+
+print(dat)
+
+ss_dat <- ss_dat %>% #need these as factors for making models later
+  mutate(
+   Crabf = factor(Crab),
+    Musself = factor(Mussel),
+    Treatmentf = factor(Treatment),
+    Site_IDF = factor(Site_ID)
+  )
+
+```
+
+```{r ss summary}
+
+summary_ss <- ss_dat %>% #get means for simplicity of the plot
+  group_by(Treatment, Vane_depth) %>%
+  summarise(mean = mean(Strength), 
+            se = sd(Strength),
+            xmin = mean - se,
+            xmax = mean + se,
+            .groups = "drop")%>%
+  mutate(Treatment = dplyr::recode(Treatment,
+    "cc" = "Crab Only",
+    "mc" = "Mussel Only",
+    "mcc" = "Crab & Mussel",
+    "ncnc" = "Reference",
+    "ncnm" = "Control"
+  ))
+
+print(summary_ss)
+```
+
+
+```{r fig1}
+#| message: false
+#| error: false
+
+fig1 <- ggplot(dat, aes(x= Treatment, y = sed_dep_av, color = Elevation))+
+  geom_point(size = 3)+
+  labs(
+    x = "Treatment",
+    y = "Sediment Deposition (g/cm²/day)"
+  )+
+  scale_x_discrete(labels = c("Crab Only", "Mussel Only", "Mussel & Crab", "Reference", "Control"))+
+  scale_color_viridis()+
+  theme_classic()
+
+print(fig1)
+ggsave("Sed_dep_per_treatment.png", plot = fig1, width = 2500, height = 1600, units = "px")
+```
+
+```{r fig2}
+#| message: false
+#| error: false
+
+fig2 <- ggplot(summary_ss, aes(x = mean, y = Vane_depth, color = Treatment))+
+  geom_point()+
+  geom_line(aes(group = Treatment), orientation = "y", linewidth = 0.8)+
+  geom_errorbar(aes(xmin = xmin, xmax = xmax), width = 0.2) +
+  scale_y_discrete(limits = rev)+
+  facet_wrap(~ Treatment)+
+  labs(
+    x = "Soil Strength (kPa)",
+    y = "Depth (cm)"
+  )+
+  scale_y_discrete(labels = c("40-50", "30-40", "20-30", "10-20", "0-10"))+
+  theme_classic()
+
+print(fig2)
+ggsave("SS_per_treatment.png", plot = fig2, width = 2500, height = 1600, units = "px")
+```
+
+```{r fig3}
+fig3 <- ggplot(dat, aes(x = Category, y = sed_dep_av, fill = Category))+
+  geom_boxplot(outliers = FALSE)+
+  scale_fill_brewer(palette = "BuPu")+
+  geom_jitter(color = "#808080", size = 1.2, alpha = 0.9)+
+  labs(
+    x = "Treatment",
+    y = "Sediment Deposition (g/cm²/day)"
+  )+
+  theme_classic()
+
+print(fig3)
+ggsave("Sed_dep_av.png", plot = fig3, width = 2500, height = 1600, units = "px")
+```
+
+
+```{r fig 4}
+
+dat1 <- subset(dat, Burrow_count >0)
+
+print(dat1)
+
+fig4 <- ggplot(dat1, aes(x = Burrow_count, y = ss1, color = Treatment))+
+  geom_point(size = 2)+
+  labs(
+    x = "Burrow Count (m²)",
+    y = "Soil Strength at 0-10 cm (kPa)"
+  )+
+  scale_color_brewer(palette = "Paired")+
+  theme_classic()
+
+
+print(fig4)
+```
+
+```{r fig 5}
+
+fig5 <- ggplot(dat, aes(x = Live_count2, y = sed_dep_av, color = Elevation))+
+  geom_point()+
+  labs(
+    x = "Live Stem Count",
+    y = "Sediment Deposition (g/cm²/day)"
+  )+
+  scale_color_viridis()+
+  theme_classic()
+
+print(fig5)
+
+ggsave("Sed_dep_and_stem.png", plot = fig5, width = 2500, height = 1600, units = "px")
+```
+
+###Control to Reference Plot Comparisons
+H0: Control plots are not different than reference plots for sediment depoistion or soil strength
+
+If I fail to reject the null hypothesis I can remove refence plot treatments from my modeling analysis as there was no effect of the caging material on my desired response variables. 
+```{r Mann-Whitney U, t-test}
+#Sediment Deposition comparison test first
+dat2 <- dat%>%
+  filter(Treatment %in% c("ncnc", "ncnm"))
+
+##Normality check 
+ggplot(dat2,aes(x = sed_dep_av)) + 
+  geom_histogram() + 
+  stat_bin(bins = 10)+
+  theme_classic()
+
+qqnorm(dat2$sed_dep_av)
+qqline(dat2$sed_dep_av, lwd = 2, col = "blue") #slight right skew 
+
+##test
+shapiro.test(dat2$sed_dep_av) #W = 0.85426, p-value = 0.01575, data is not normal so use Mann-Whitney U test
+
+wilcox.test(sed_dep_av ~ Treatment, data = dat2) #W = 41, p-value = 0.3823 so I fail to reject the null hypothesis
+
+#Soil Strength Comparison test, have to check at each depth interval to compare the two groups 
+
+##depth 0-10cm
+###Normality check
+qqnorm(dat2$ss1)
+qqline(dat2$ss1, lwd = 2, col = "blue") #dip in the middle  
+
+shapiro.test(dat2$ss1) #W = 0.92816, p-value = 0.2279, data is normal so can use the two sample t-test
+
+##test
+t.test(ss1 ~ Treatment, data = dat2) #t = 1.1035, df = 12.098, p-value = 0.2913
+
+##depth 10-20cm
+###Normality check
+qqnorm(dat2$ss2)
+qqline(dat2$ss2, lwd = 2, col = "blue") #looks good 
+
+shapiro.test(dat2$ss2) #W = 0.9652, p-value = 0.7561, data is normal so can use the two sample t-test
+##test
+t.test(ss2 ~ Treatment, data = dat2) #t = 1.39, df = 12.512, p-value = 0.1888
+
+##depth 20-30cm
+###Normality check
+qqnorm(dat2$ss3)
+qqline(dat2$ss3, lwd = 2, col = "blue") #looks good 
+
+shapiro.test(dat2$ss3) #W = 0.98522, p-value = 0.9917, data is normal so can use the two sample t-test
+
+##test
+t.test(ss3 ~ Treatment, data = dat2) #t = 0.69953, df = 13.995, p-value = 0.4957
+
+##depth 30-40cm
+###Normality check
+qqnorm(dat2$ss4)
+qqline(dat2$ss4, lwd = 2, col = "blue") #slight deviations at end points
+
+shapiro.test(dat2$ss4) #W = 0.98007, p-value = 0.9642, data is normal so can use the two sample t-test
+
+##test
+t.test(ss4 ~ Treatment, data = dat2) #t = -0.38713, df = 12.821, p-value = 0.705
+
+##depth 40-50cm
+###Normality check
+qqnorm(dat2$ss5)
+qqline(dat2$ss5, lwd = 2, col = "blue") #slight deviations at end points
+
+shapiro.test(dat2$ss5) #W = 0.92715, p-value = 0.2196, data is normal so can use the two sample t-test
+
+##test
+t.test(ss5 ~ Treatment, data = dat2) #t = -0.15377, df = 13.295, p-value = 0.8801
+
+#Bonferroni adjustment
+##because I did 6 statistical tests with these two treatments I need to correct my p-value to alpha/number of tests which the new alpha would be 0.0083. This shouldn't be a problem because I am hoping for the null hypothesis
+```
+Conclusions: Based on the two sample t-tests conducted and the Mann Whitney-U test, the control and references cages are not different in terms of the two response variables: sediment deposition and soil strength. Thus, I can remove reference cages from analysis when considering my models and just have the controls against the other treatments. 
+
+#Models 
+##Q1
+1.How does the presence of the fiddler crab, Minuca pugnax, effect salt marsh stability: resistance to erosion (quantified by soil strength as a proxy) and vertical accretion?
+
+I am going to start with a general linear model even though the raw residuals were not normal to check is standardized residuals are. If the standardized residuals are not normal I will move to a generalized linear model if they are normal, I will continue using LMs. If I use a generalized linear model, because the data is continuous with positive values I will use a gamma distribution with an inverse canonical link. I will make models with replicate as a random variable to deal with the cages not being truly independent from each other due to proximity of all of the cages being in one site. 
+```{r model}
+#make new dataset without the reference plots
+dat3 <- dat %>%
+  filter(Treatment %in% c("cc", "ncnm", "mc", "mcc"))
+hist(dat3$sed_dep_av)
+
+#check for multicolinearity
+GGally::ggpairs(dat3[,c(15, 29, 45)]) #not straight lines, so we are looking good here
+
+#potential models
+
+m0a <- lm(sed_dep_av ~ Treatmentf, data = dat3)
+summary(m0a)#The standard errors look good as they are all an order of magnitude lower. The mussel crab cage and reference cage has a lower sediment deposition compared to the crab cage. The mussel cage has a higher sediment deposition compared to the crab cage. Multiple r squared is low (o.o4195), this currently doesn't really describe what's happening.
+check_model(m0a)#Normality looks a little skewed at the extremes but nothing I am too worried about. The homogeneity of variance however, could be better so I am going to compared with a GLM
+
+m0b <- glmmTMB(sed_dep_av ~ Treatmentf, data = dat3, family = Gamma(link = "log"))
+summary(m0b) #The standard error is high compared to the estimates. The estimates for all other treatments compared to cc is the same, which seems off
+
+check_model(m0b)
+
+#Continuing with gamma log link GLM
+m1b <- glmmTMB(sed_dep_av ~ Treatmentf + Elevation, data = dat3, family = Gamma(link = "log"))
+summary(m1b)#standard errors are not better as they are still on the same order of magnitude, the elevation error is an order of magnitude less than estimate
+
+m2b <- glmmTMB(sed_dep_av ~ Treatmentf + Elevation + (1|Replicatef), data = dat3, family = Gamma(link = "log"))
+summary(m2b) #random effect standard error is higher than variance. 
+
+m3b <-glmmTMB(sed_dep_av ~ Treatmentf + Elevation + Live_count2, data = dat3, family = Gamma(link = "log"))
+summary(m3b)#Standard errors are still on the same order of magnitude for some values
+
+m4b <-glmmTMB(sed_dep_av ~ Treatmentf*Live_count2 + Elevation*Live_count2, data = dat3, family = Gamma(link = "log"))
+summary(m4b)
+
+m5b <-glmmTMB(sed_dep_av ~ Treatmentf*Live_count2 + Elevation*Live_count2 + (1|Replicate), data = dat3, family = Gamma(link = "log"))
+summary(m5b)
+
+m6b <-glmmTMB(sed_dep_av ~ Treatmentf + Elevation + Live_count2 + (1|Replicatef), data = dat3, family = Gamma(link = "log"))
+summary(m6b)
+
+
+```
+
+###Model Selection
+```{r AIC}
+
+AIC(m0a, m0b, m1b, m2b, m3b, m4b, m5b, m6b) %>%
+  arrange(AIC) %>%
+  print()
+
+#m1b had the lowest AIC at -620
+
+```
+
+###Diagnostic plots to check model assumptions
+```{r}
+
+performance::check_model(m1b)
+check_overdispersion(m1b) #no overdispersion detected so that is not why the variance is not spread evenly
+#Homogeneity of variance is not good. It is very squiggly and not evenly spread. 
+
+#Is there a better type of model I can use for this type of data?
+
+
+```
+
+###Model Predictions
+```{r}
+# use the ggpredict function in the ggeffects package to get estimated adjusted predictions and confidence intervals for each species at different levels of species
+
+m1b_ggpredict <- 
+  ggeffects::ggpredict(m1b, terms = c("Treatmentf"))
+
+print(m1b_ggpredict, n = Inf)
+
+plot(m1b_ggpredict) # default interaction plot; can use ggplot syntax to modify as needed
+
+#make a better plot 
+m1b_fig <- ggplot(m1b_ggpredict, aes(x = x, y = predicted))+
+  geom_point(size = 3)+
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2)+
+  geom_point(data = dat3, aes(x = Treatmentf, y = sed_dep_av, color = Treatmentf), inherit.aes = FALSE)+ 
+  labs(
+    x = "Treatment",
+    y = "Sediment Deposition g/cm2/year"
+    )+
+  theme_classic()
+
+print(m1b_fig)
+
+#still need to change treatment names for the graph
+```
