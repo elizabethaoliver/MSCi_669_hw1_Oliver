@@ -10,8 +10,8 @@ editor:
 
 ## Final Project - Brief Summary
 
-####Questions: 1.
-How does the presence of the fiddler crab, Minuca pugnax, effect salt marsh stability: resistance to erosion (quantified by soil strength as a proxy) and vertical accretion?
+####Questions: 
+1.How does the presence of the fiddler crab, Minuca pugnax, effect salt marsh stability: resistance to erosion (quantified by soil strength as a proxy) and vertical accretion?
 2. Can the ribbed mussel, Guekensia demissa, offset the predicted negative effects of bioturbation of M. pugnax on marsh stability?
 
 ####Hypotheses: 
