@@ -48,6 +48,11 @@ data <- read.csv('Fiddler_cages_marsh_stability_working.csv')
 summary(data)
 ```
 
+[A couple thoughts here: 
+
+1. I generally don't recommend naming your objects functions that already exist in R (e.g., data, t, c, etc.) because R can get a confused.
+2. Your site_id seems to be a sample id (i.e., it is unique to the specific site*treatment). You will likely want to include an identifier for the specific site or block.]{style="color: aquamarine;"}
+
 Need to make the NA values true NA values so the string is read as a numeric rather than chr so that I can calculate means.
 
 ```{r str data}
@@ -59,6 +64,8 @@ data <- data %>%
 
 str(data)
 ```
+
+[If you leave blanks in your excel file (rather than typing "NA"), R will read them in as NAs.]{style="color: aquamarine;"}
 
 Before making graphs I need to do some calculations. Each site there were 3 replicates of sediment deposition tubes to get a mean of sediment deposition. So I need to calculate the mean than find the deposition rate per area per time so I can compare it across sites.
 
@@ -73,6 +80,10 @@ data <- data %>%
     sed_dep_sd = sd(dep_av)/(Area * Time_elapsed) #area and time are constants between the 3 sediment deposition used for averages thus there is no variance between them. 
   )
 ```
+
+[Double-check your calculation for standard deviation here. I'm pretty sure you're calculating the standard deviation of the means of all of your cages (and adjusting by cage-specific area and time), rather than calculating cage-specific standard deviations from the three sediment deposition measurements.
+
+We haven't spent much time talking about ideal data/table structures, but you've combined a few different types of data into one table and that can make things more difficult to analyze. In your case, I'd probably extract the sediment measurements, pivot to a long format, and calculate means and standard deviations for each cage that can then be appended back to the main table.]{style="color: aquamarine;"}
 
 Currently, mussel, crab, and stem counts are referencing a 1/16 meter squared plot.For ease of comparison, I am going to extrapolate it to a meter square density
 
@@ -146,6 +157,8 @@ print(fig1)
 
 For figure 1, I am looking at the different sediment deposition rates relative to each treatment. This will help to answer how the presence of the fiddler crab will effect vertical accretion and if the presence of mussels can offset the impact the fiddler crabs will have. Sediment deposition is being used to define vertical accretion. I am not trying to scale up to vertical annual accretion rates but used them as comparative values between treatments. Elevation is provided as a scale for each replicate as the cages where placed at different elevations (due to natural differences found in salt marshes). Elevation is a factor that can effect vertical accretion. Thus it is important to consider elevation compared to the sediment deposition rates calculated. For example, it makes sense that for individual treatments like the mussel only treatments, you see lower sediment deposition at replicates with higher elevation and higher sediment deposition rates in replicates with lower elevation as there is a reduction in water that is transporting sediment at higher elevations compared to lower elevations. The variance between the mussel treatment is high but that could be explained by the elevation differences similarly with the crab only plot. However the control plot also has some variance but the elevation is within a smaller range compared to other plots. I choose to do a scatter instead of a box plot because I wanted to visualize elevation at each point which I would loose this feature if I did box or violin plots.
 
+[There's a lot going on with this figure. I wonder if there's value in plotting sediment deposition as a function of elevation, with the different treatments indicated in different colors. It is changing the question a little, but as currently plotted, since the elevations are so different across treatments, it's difficult to interpret.]]{style="color: aquamarine;"}
+
 ```{r fig2}
 #| message: false
 #| error: false
@@ -166,6 +179,11 @@ print(fig2)
 ```
 
 Figure 2 hopes show relationships between treatment and soil strength at depth. This hopes to answer how differing treatments specifically the presence of fiddler crab has on erosion potential which is being measured by soil strength. Without manipulation, soil strength is expected to be highest at depths 10-20 & 20-30 as this is where a majority of the root mass from Spartina is found. I did the means of soil strength for each depth interval for each treatment. Instead of having the points all on one plot, I used facet_wrap so that I could look at each treatment individually. I reversed the depth profile using limits = rev so that visually, it was going to depth rather than the deepest core being on the top. I choose to do a line scatter as I thought this would help visually represent what is happening with soil strength at each depth. From this graph it may be interesting to see what a scatter plot of each depth looks like for each treatment.
+
+[A couple things to consider here: 
+
+1. When these lines are overlaid, you can more easily visualize the differences, especially since the five plots continue on two rows. 
+2. I'd recommend including a ribbon with the standard deviations across the 8 replicates to provide an indication of how much variance is in these patterns.]{style="color: aquamarine;"}
 
 ```{r fig 3}
 
@@ -197,6 +215,8 @@ print(fig3)
 
 For figure 3 I wanted another way to visualize treatment type to sediment deposition through a box plot.
 I overlaid jitter to demonstrate similar to a violin plot where the distribution of the data mainly lies for each Treatment. This time I did not add elevation to this plot. I think with this plot its hard to tell if there is a relationship between treatment and sediment deposition. However, it may be helpful to look at the final density of crab and mussel to sediment deposition when considering my models.
+
+[I like the addition of the jitter, but it does make it difficult because the outliers are also indicated as a point. For example, it looks like the outliers are indicated twice, once as the outlier and once as part of the jitter, which is a little confusing.]{style="color: aquamarine;"}
 
 ```{r fig 4}
 
@@ -258,13 +278,14 @@ My thinking behind this was similar to other figures made in that elevation stil
 **Considering the study design and data, and your research questions, objectives, and/or testable hypotheses, describe your proposed analytical approach. Include your response and predictor variables, type of analysis (linear regression, generalized linear regression, gam, etc.), model selection criteria, etc. Provide sufficient detail to evaluate your proposed approach in the context of your data and questions of interest. If you have questions or uncertain about anything, highlight that here as well. \[2.5 pts\]**
 
 My response variables will be soil strength and sediment deposition where predictor variables will be stem count, presence v absence of fiddler crabs/treatment type, and elevation.
-First, I will need to conduct a general linear model of some degree to evaluate if I can remove the reference plots from the rest of my analysis. To do so, I plan on conducting a t-test comparing the control to the reference plots for each of my response variables. If they are not significantly different, then I can remove the reference plots from further analysis. Here I am only testing potential caging effects on the response variables. Any reference plots with organisms in them will be removed from this analysis.
+First, I will need to conduct a general linear model of some degree to evaluate if I can remove the reference plots from the rest of my analysis. To do so, I plan on conducting a t-test comparing the control to the reference plots for each of my response variables. If they are not significantly different, then I can remove the reference plots from further analysis. Here I am only testing potential caging effects on the response variables. Any reference plots with organisms in them will be removed from this analysis. [Is a t-test appropriate here given your response variables? ]{style="color: aquamarine;"}
 
-For the soil strength measurements, I plan on comparing mixed-effects models as measurements at each depth came from the same sampling location, thus they are not independent within each cage. I would plan on soil strength (at each depth) and treatment being fixed effects with each cage being a random effect. Here I would also add potentially other predictor variables like stem count to see if it strengthens the model. From the mixed-model, I would look at the ICC (inter cluster correlation coefficient) to see how the variance is explained by the random vs. fixed effects.
+For the soil strength measurements, I plan on comparing mixed-effects models as measurements at each depth came from the same sampling location, thus they are not independent within each cage. I would plan on soil strength (at each depth) and treatment being fixed effects with each cage being a random effect. Here I would also add potentially other predictor variables like stem count to see if it strengthens the model. From the mixed-model, I would look at the ICC (inter cluster correlation coefficient) to see how the variance is explained by the random vs. fixed effects. [Clarifying point: You calculated shear strength at 5 depths per cage, but only in one spot for each cage?]{style="color: aquamarine;"}
+
 If the random effects is low, I plan to make a generalized linear model having depth and treatment as the fixed effects and plots acting as the independent replicates for each treatment. For each treatment I will use simple linear regressions to fit them to either linear, polynomial, or exponential curves to create models of strength vs. depth.
-For all of the soil strength models I plan to compare via AIC values after looking at diagnostics from residual plots and qqplots. By singling out individual treatments via mixed-effect models by treatment, I can test which treatments are different overall from another and if treatment effects change with depth. This will help to answer if the presence or absence of fiddler crabs and mussels have an effect on erosion potential. Then, by testing the fit to linear, exponential, or polynomial models to each treatment, those models will help describe how soil strength changes with depth for each treatment and describe the pattern that is shown with depth.
+For all of the soil strength models I plan to compare via AIC values after looking at diagnostics from residual plots and qqplots. By singling out individual treatments via mixed-effect models by treatment, I can test which treatments are different overall from another and if treatment effects change with depth. This will help to answer if the presence or absence of fiddler crabs and mussels have an effect on erosion potential. Then, by testing the fit to linear, exponential, or polynomial models to each treatment, those models will help describe how soil strength changes with depth for each treatment and describe the pattern that is shown with depth. [We hadn't gotten to GAMs when these were due, but  you might consider them for your analyses over glmms, as this will allow you to have a flexible depth relationship rather than requiring a linear, polynomial, or exponential relationship. Additionally, I typically don't recommend separating your data into different models, as this makes it more complicated to directly compare across the different treatments. Instead, you might consider using interactions to address potential differences in the response across treatments.]{style="color: aquamarine;"}
 
-Analysis of sediment deposition will answer how the presence or absence of fiddler crabs and mussels will impact vertical accretion. For this, I plan on conducting either multiple t-tests or a one-way ANOVA to compare sediment deposition between treatments if the data is normal. If the data is not normal I will look at multiple linear models to compare treatment to sediment deposition. I will also include elevation and stem count to some of these models to find the best model. Because stem count and treatment type may have an interaction, I will add an interaction term too. I will use VIF to check for any colinearity within the models I create and correct standard error if VIF is high. Using performance and predict packages in R, I will test model fit for each one then use AIC to determine which model best describes the data. If the data is non-normal I plan on moving toward generalized linear models. I do need help in figuring out which generalized linear models I should maybe look at. I know this data is on the zero to positive infinity scale but it is not continuous so I would not be able to use gamma. If I could get a suggested on what GLM I could use for this I think this is where I get stuck. I am just currently uncertain as to what to do if I don't get normal data here as I don't want to transform the raw data. 
+Analysis of sediment deposition will answer how the presence or absence of fiddler crabs and mussels will impact vertical accretion. For this, I plan on conducting either multiple t-tests or a one-way ANOVA to compare sediment deposition between treatments if the data is normal. If the data is not normal I will look at multiple linear models to compare treatment to sediment deposition. I will also include elevation and stem count to some of these models to find the best model. Because stem count and treatment type may have an interaction, I will add an interaction term too. I will use VIF to check for any colinearity within the models I create and correct standard error if VIF is high. Using performance and predict packages in R, I will test model fit for each one then use AIC to determine which model best describes the data. If the data is non-normal I plan on moving toward generalized linear models. I do need help in figuring out which generalized linear models I should maybe look at. I know this data is on the zero to positive infinity scale but it is not continuous so I would not be able to use gamma. If I could get a suggested on what GLM I could use for this I think this is where I get stuck. I am just currently uncertain as to what to do if I don't get normal data here as I don't want to transform the raw data. [I think there's a little confusion here, if your response variable is vertical accretion, then it is continuous, right? The normal distribution also assumes continuous, but from -inf to +inf. I don't think you have any zeros in your vertical accretion data, so the positive, continuous distributions such as lognormal and gamma should be ok to start at least.]{style="color: aquamarine;"}
 
 ## AI statement
 
