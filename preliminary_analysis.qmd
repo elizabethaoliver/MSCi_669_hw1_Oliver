@@ -24,6 +24,8 @@ dat <- read.csv('Fiddler_cages_marsh_stability_working.csv')
 summary(dat)
 
 ss_dat <- read.csv('Fiddler_cages_soil_strength_2026_working.csv')
+
+sed_dat <- read.csv('Sediment_deposition_working.csv')
 ```
 
 Need to make the NA values true NA values so the string is read as a numeric rather than chr so that I can calculate means.
@@ -45,15 +47,14 @@ Each site there were 3 replicates of sediment deposition tubes to get a mean of 
 So I need to calculate the mean than find the deposition rate per area per time so I can compare it across sites.
 
 ```{r mean}
-cols <- c("sed_dep1", "sed_dep2", "sed_dep3") #make a string to get the mean
 
-dep_av <- rowMeans(dat[cols], na.rm = TRUE) #mean while ignoring the NA
-
-dat <- dat %>%
-  mutate(
-    sed_dep_av = (dep_av/(Area * Time_elapsed)), #sediment deposition/cm^2/day
-    sed_dep_sd = sd(dep_av)/(Area * Time_elapsed) #area and time are constants between the 3 sediment deposition used for averages thus there is no variance between them. 
+sed_dat <- sed_dat %>%
+  group_by(Site_ID)%>%
+  summarise(
+    sed_av = mean(Value), #sediment deposition is in long format already and g/cm2/day format per replicate
+    sed_sd = sd(Value)
   )
+
 ```
 
 Currently, mussel, crab, and stem counts are referencing a 1/16 meter squared plot.For ease of comparison, I am going to extrapolate it to a meter square density
@@ -113,12 +114,16 @@ summary_ss <- ss_dat %>% #get means for simplicity of the plot
 print(summary_ss)
 ```
 
+Combining Sed dat with main data table 
+```{r}
+new_dat <- left_join(dat, sed_dat, by = "Site_ID")
+```
 
 ```{r fig1}
 #| message: false
 #| error: false
 
-fig1 <- ggplot(dat, aes(x= Treatment, y = sed_dep_av, color = Elevation))+
+fig1 <- ggplot(new_dat, aes(x= Treatment, y = sed_av, color = Elevation))+
   geom_point(size = 3)+
   labs(
     x = "Treatment",
@@ -321,7 +326,7 @@ summary(m3b)#Standard errors are still on the same order of magnitude for some v
 m4b <-glmmTMB(sed_dep_av ~ Treatmentf*Live_count2 + Elevation*Live_count2, data = dat3, family = Gamma(link = "log"))
 summary(m4b)
 
-m5b <-glmmTMB(sed_dep_av ~ Treatmentf*Live_count2 + Elevation*Live_count2 + (1|Replicate), data = dat3, family = Gamma(link = "log"))
+m5b <-glmmTMB(sed_dep_av ~ Treatmentf*Live_count2 + Elevation*Live_count2 + (1|Replicate), data = dat3, family = Gamma(link = "log")) #make sure live count 2 only shows up once 
 summary(m5b)
 
 m6b <-glmmTMB(sed_dep_av ~ Treatmentf + Elevation + Live_count2 + (1|Replicatef), data = dat3, family = Gamma(link = "log"))
