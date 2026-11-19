@@ -1,0 +1,578 @@
+---
+title: "ARA 669 - Assignment 4"
+author: "Your name here"
+date: "today's date here"
+output: html_document
+---
+
+## Overview
+
+The goal of this assignment is to apply the tools and approaches we've learned during this course to critique, and then expand on, a statistical analysis. 
+
+Please submit this assignment via GitHub by 20 November.   
+
+## Read & reflect
+
+**Read the article "Seascape ecology of juvenile gadoid nursery areas" (Walker-Milne et al. 2025). Describe: \[2 pt\]**
+
+1. The primary question(s) the authors are trying to answer.
+The objective of this study was to identify what habitat composition variables would alter (hopefully increase) species distributions of three commercially important juvenile fish species. 
+
+2. The experimental and sampling design. 
+Sampling was conducted on the West Coast of Scotland where stereo remote underwater video (SBRUV) was deployed for 60 minute intervals. After video collection, fish were ID to species and if possible measured for length. Environmental parameters such as substratum type, distance to shore, depth, distance to edge of seabed patch, and patch perimeter were also obtained at each station. 
+
+3. The statistical approach used. 
+The authors choose to use GAMS where they divided the sampling events into two categories and due to found spatial autocorrelation, they divided the study sites into zones. The GAMs compared a selected species by the environmental parameters measured at the sites. 
+
+**Imagine you are reviewing this manuscript prior to its publication. Provide a constructive critique of the statistical analyses as they relate to the experimental and sampling design. What did they do well? What would be improved? \[3 pt\]**
+I would suggest looking at the months individually as well rather than just early and late. I don't know how fast the fish grow or how much temperature changes happening during June/July which may affect the results. Same with the late season. I wish they had explained more as to why these months were grouped together especially with respect to the fish species because they were trying to ID if there were ontogenetic shifts. I would imagine those would need to be looked at in a monthly scale. i also am unsure if partitioning the study area into zones actually dealt with the spatial autocorrelation. I would encourage the authors to just have the sites (lon, lat) without having them partitioned by zone added as a smoother. What I think they did well was checking for co linearity of environmental variables being tested especially since there were a lot being tested in the models that may have been similar like TRI and substratum type. 
+
+## Re-analysis
+
+The data associated with this paper are available here: https://datadryad.org/dataset/doi:10.5061/dryad.fbg79cp7n.
+
+Considering your critique of the statistical approach taken, re-analyze the data, focusing on MaxN (the maximum number of individuals present in the frame at one time during the video) as the response variable. For the purposes of this assignment, don't worry about the AUC or data splitting to test for accuracy, just use the full dataset. 
+
+**Use the code chunk below to load packages and the data. \[0.5 pt\]**
+
+```{r setup}
+#| message: false
+#| error: false
+
+library(mgcv)
+library(ggeffects)
+library(performance)
+library(gamlss)
+library(tidyverse)
+library(dplyr)
+
+ggplot2::theme_set(theme_classic())
+
+dat <- read.csv('gadoid.metadata.2.csv')
+head(dat)
+str(dat)
+#need to make season, habitat, and species as a factor and maybe restructure year if I choose to add that to the analysis
+
+summary(dat)
+
+dat <- dat%>%
+  mutate(
+    seasonf = as.factor(Season),
+    habitatf = as.factor(Habitat),
+    speciesf = as.factor(Species)
+  )
+
+dat_aeg <- dat %>%
+  filter(speciesf %in% c("aeglefinus")) #aeglefinus
+
+dat_mor <- dat%>%
+  filter(Species %in% c("morhua"))
+
+dat_mer <- dat%>%
+  filter(Species %in% c("merlangus"))
+
+
+pairs(dat[,c(14:23)])
+
+```
+
+## Data exploration
+
+**Explore the data visually using ggplot2. \[0.5 pt\]**
+
+```{r plotting}
+#| message: false
+#| error: false
+
+f1 <- ggplot(dat, aes(x = Pebble, y = Shannon))+
+  geom_point()
+
+f2 <- ggplot(dat, aes(x = habitatf, y = Shannon))+
+  geom_point()+
+  geom_jitter(width = 0.25)
+
+f3 <- ggplot(dat, aes(x = perim.area.ratio, y = Shannon))+
+  geom_point()
+
+f4 <- ggplot(dat_aeg, aes(x = Habitat, y = MaxN))+
+  geom_point()
+
+f5 <- ggplot(dat, aes(x = Habitat, y = MaxN))+
+  geom_point()
+
+```
+
+## Model development
+
+**Based on the experimental and sampling design, which variables should be considered as fixed effects? Which could be considered as random effects? What distributions should be considered? \[1 pt\]**
+
+Fixed effects: algae, gravel, sand, pebble, mud, TRI, distance to sand edge, distance to mud edge, distance to shore, Simpsons, mean velocity, perimeter to area ratio
+
+Random effects: long, lat, zone, season. 
+
+A binomial distribution should be considered as the response variable is presence v. absence so a bunch of 1 and 0s 
+
+## Analysis
+
+**Develop a set of generalized additive mixed-effects models that reflect the structures described above. \[1 pt\]**
+
+```{r models}
+#| message: false
+#| error: false
+
+#aeglefinus
+m0a <- gam(PA ~ s(Algae)+ s(Depth) + s(dist) + s(Simpson) + s(mean_velocity) + s(Zone, bs = "re"), dat = dat_aeg, family = binomial) #final model from the paper for this species
+
+m1a <- gam(PA ~ s(Algae) + s(Gravel) + s(Sand) + s(Pebble) + s(tri) + s(Simpson) + s(mean_velocity) + s(sand.dist.edge) + s(mud.dist.edge) + s(Zone, bs = "re"), dat = dat_aeg, family = binomial) #adding parameters that were used in other models from paper 
+
+m2a <- gam(PA ~ s(Algae)+ s(Depth) + s(dist) + s(Simpson) + s(mean_velocity) + te(Latitude, Longitude), dat = dat_aeg, family = binomial) #switching zone for long and lat for spatial consideration using a te because I don't need a main effect for lat and lon just how it will effect the response variable
+
+m3a <- gam(PA ~ s(Algae) + s(Gravel) + s(Sand) + s(Pebble) + s(tri) + s(Simpson) + s(mean_velocity) + s(sand.dist.edge) + s(mud.dist.edge) + te(Latitude, Longitude), dat = dat_aeg, family = binomial) 
+
+m4a <- gam(PA ~ te(Latitude, Longitude), dat = dat_aeg, family = binomial) #just having space without any other fixed effects
+
+m5a <- gam(PA ~ s(Zone, bs = "re"), dat = dat_aeg, family = binomial) #have it compared to the zone smoother that was originally added
+
+m6a <- gam(PA ~ s(Algae) + s(Gravel) + s(Sand) + s(Pebble) + s(Mud) + s(tri) + s(perim.area.ratio) + s(Simpson) + s(mean_velocity) + te(Latitude, Longitude), dat = dat_aeg, family = binomial) #removing distance from _ parameters and adding in mud and perimeter to area ratio
+
+m7a <- gam(PA ~ s(seasonf, bs = "re"), dat = dat_aeg, family = binomial) #switching the random factor to season 
+
+m8a <- gam(PA ~ s(Algae) + s(Gravel) + s(Sand) + s(Pebble) + s(tri) + s(Simpson) + s(mean_velocity) + s(sand.dist.edge) + s(mud.dist.edge) + s(seasonf, bs = "re"), dat = dat_aeg, family = binomial)  
+
+m9a <- gam(PA ~ s(Algae) + s(Gravel) + s(Sand) + s(Pebble) + s(tri) + s(Simpson) + s(mean_velocity) + s(sand.dist.edge) + s(mud.dist.edge) + s(Zone, bs = "re") + s(seasonf, bs = "re"), dat = dat_aeg, family = binomial) #time and space considerations
+
+#morhua
+m0b <- gam(PA ~ s(Algae) + s(Gravel) + s(Sand) + s(Pebble) + s(tri) + s(Simpson) + s(mean_velocity) + s(sand.dist.edge) + s(mud.dist.edge) + s(Zone, bs = "re"), dat = dat_mor, family = binomial) #final model from the paper for this species 
+
+m1b <- gam(PA ~ s(Algae) + s(Gravel) + s(Sand) + s(Pebble) + s(tri) + s(Simpson) + s(mean_velocity) + s(sand.dist.edge) + s(mud.dist.edge) + te(Latitude, Longitude), dat = dat_mor, family = binomial) #switching to te long, lat 
+
+m2b <- gam(PA ~ te(Latitude, Longitude), dat = dat_mor, family = binomial) #just having space without any other fixed effects
+
+m3b <- gam(PA ~ s(Zone, bs = "re"), dat = dat_mor, family = binomial) #have it compared to the zone smoother that was originally added
+
+m4b <- gam(PA ~ s(Algae) + s(Gravel) + s(Sand) + s(Pebble) + s(Mud) + s(tri) + s(perim.area.ratio) + s(Simpson) + s(mean_velocity) + te(Latitude, Longitude), dat = dat_mor, family = binomial) #removing distance from _ parameters and adding in mud and perimeter to area ratio
+
+m5b <- gam(PA ~ s(seasonf, bs = "re"), dat = dat_mor, family = binomial) #switching the random factor to season 
+
+m6b <- gam(PA ~ s(Algae) + s(Gravel) + s(Sand) + s(Pebble) + s(tri) + s(Simpson) + s(mean_velocity) + s(sand.dist.edge) + s(mud.dist.edge) + s(seasonf, bs = "re"), dat = dat_mor, family = binomial) #paper's model but with season as re instead of zone 
+
+m7b <- gam(PA ~ s(Algae) + s(Gravel) + s(Sand) + s(Pebble) + s(tri) + s(Simpson) + s(mean_velocity) + s(sand.dist.edge) + s(mud.dist.edge) + s(Zone, bs = "re") + s(seasonf, bs = "re"), dat = dat_mor, family = binomial) #time and space considerations
+  
+#merlangus
+m0c <- gam(PA ~ s(Depth) + s(tri) + s(Mud) + s(mean_velocity) + s(Simpson) + s(algae.dist.edge) + s(gravel.dist.edge) + s(Zone, bs = "re"), dat = dat_mer, family = binomial)
+
+m1c <- gam(PA ~ s(Depth) + s(tri) + s(Mud) + s(mean_velocity) + s(Simpson) + s(algae.dist.edge) + s(gravel.dist.edge) + te(Latitude, Longitude), dat = dat_mer, family = binomial) #switching zone for lat long smoother
+
+m2c <- gam(PA ~  te(Latitude, Longitude), dat = dat_mer, family = binomial) #lat long smoother only 
+  
+m3c <- gam(PA ~  s(Zone, bs = "re"), dat = dat_mer, family = binomial) #zone smoother only
+
+m4c <- gam(PA ~  s(seasonf, bs = "re"), dat = dat_mer, family = binomial) #season smoother only 
+
+m5c <- gam(PA ~ s(Mud) + s(Algae) + s(Pebble) + s(Sand) + s(Gravel) + te(Latitude, Longitude), dat = dat_mer, family = binomial) #model with only habitat types and location
+
+m6c <- gam(PA ~ s(Mud) + s(Algae) + s(Pebble) + s(Sand) + s(Gravel) + s(Simpson) + te(Latitude, Longitude), dat = dat_mer, family = binomial) #adding in Diversity
+
+m6c <- gam(PA ~ s(Mud) + s(Algae) + s(Pebble) + s(Sand) + s(Gravel) + s(Simpson) + s(gravel.dist.edge) + s(mud.dist.edge) + s(sand.dist.edge) + s(algae.dist.edge) + s(pebble.dist.edge) + te(Latitude, Longitude), dat = dat_mer, family = binomial) #adding in distance parameters
+
+m7c <- gam(PA ~ s(Mud) + s(Algae) + s(Pebble) + s(Sand) + s(Gravel) + s(Simpson) + s(gravel.dist.edge) + s(mud.dist.edge) + s(sand.dist.edge) + s(algae.dist.edge) + s(pebble.dist.edge) + s(tri) + s(Depth) + te(Latitude, Longitude), dat = dat_mer, family = binomial) #adding in depth and tri
+
+```
+
+**Evaluate the models using an approach covered as part of this class. \[0.5 pt\]**
+
+```{r modelselection}
+#| message: false
+#| error: false
+
+#aeglefinus
+AIC(m0a, m1a, m2a, m3a, m4a, m5a, m6a, m7a, m8a, m9a) %>%
+  arrange(AIC) %>%
+  print()
+#m2a is the lowest AIC
+
+#morhua
+AIC(m0b, m1b, m2b, m3b, m4b, m5b, m6b, m7b) %>%
+  arrange(AIC) %>%
+  print()
+#m1b is the lowest AIC
+  
+#merlangus
+AIC(m0c, m1c, m2c, m3c, m4c, m5c, m6c, m7c) %>%
+  arrange(AIC) %>%
+  print()
+
+#m7c is the lowest AIC
+
+```
+
+**Check your model diagnostics (i.e., are the model assumptions met) using an approach covered as part of this class. \[1 pt\]**
+
+```{r diagnostics}
+#| message: false
+#| error: false
+
+#aeglefinus
+summary(m2a)
+
+par(mfrow = c(2, 2))
+gam.check(m2a) 
+par(mfrow = c(1, 1))
+
+
+#morhua
+summary(m1b)
+
+
+par(mfrow = c(2, 2))
+gam.check(m1b) 
+par(mfrow = c(1, 1))
+
+#merlangus
+summary(m7c)
+
+par(mfrow = c(2, 2))
+gam.check(m7c) 
+par(mfrow = c(1, 1))
+```
+
+**Which model would you choose as your final model? Why is that model preferred over the others? \[1 pt\]**
+For aeglefinus species I would choose model m2a as it had the lowest AIC and personally I think it considered space between from using long and lat instead of arbitrary zones that the original paper had used. While this model does not include time in it, I feel like the time component is hard since there are very few years that were completed with this sampling. For morhua species I choose the m1b model, similar to the previous species I think switching out the smoother that is being applied for space to longitude and latitude helped describe the data better. Lastly, for merlangus species, adding in more habitat variables and the latitude and longitude space smoother made m7c the best model to help describe the data. All these models looked good in terms of residuals. While there are patterns with residuals and linear predictor it is due to binomial nature of the model. Otherwise I would say the residuals looked good for these models. While I did not choose to use a more complex spatia model and staying in gam() rather than moving to sdmTMB() and adding a mesh, I still feel that this data was well represented by the model I created. Especially since the area sampled was quite small compared to some of the models we created in class which encompassed the entirety of Chesapeake Bay. 
+
+**Generate model predictions (using the ggeffects package) and plot the predictions over observed data. Describe your results. \[1.5 pt\]**
+
+```{r predictions}
+#| message: false
+#| error: false
+
+#aeglefinus
+
+plot(m2a, pages = 1)
+
+m2a_pred <- predict_response(
+  m2a, 
+  terms = c("Latitude[55.40:55.6 by = 0.005]", "Longitude[-5.3:-5.00 by = 0.005]")
+)
+
+m2a_pred %>%
+  tibble()%>%
+  mutate(
+    group = group %>% as.character() %>% as.numeric()) %>%
+ggplot(
+  aes(x = group, y = x, fill = predicted))+
+  geom_tile()+
+  labs(
+    x = "Lon",
+    y = "Lat"
+  )+
+  scale_fill_continuous(
+    palette = "viridis"
+  )+
+  coord_equal()+
+  theme_classic()
+#indv fixed effects for aeglefinus
+##distance
+m2a_pred1 <- predict_response(
+  m2a, 
+  terms = c("dist")
+)
+
+plot(m2a_pred1)%>%
+  print
+##Algae
+m2a_pred2 <- predict_response(
+  m2a, 
+  terms = c("Algae")
+)
+
+plot(m2a_pred2)%>%
+  print
+##Simpson
+m2a_pred3 <- predict_response(
+  m2a, 
+  terms = c("Simpson")
+)
+
+plot(m2a_pred3)%>%
+  print
+
+##Depth
+m2a_pred4 <- predict_response(
+  m2a, 
+  terms = c("Depth")
+)
+
+plot(m2a_pred4)%>%
+  print
+
+##Mean_velocity
+m2a_pred5 <- predict_response(
+  m2a, 
+  terms = c("mean_velocity")
+)
+
+plot(m2a_pred5)%>%
+  print
+
+
+#morhua
+plot(m1b, pages = 1)
+
+
+m1b_pred <- predict_response(
+  m1b, 
+  terms = c("Latitude[55.4:55.6 by = 0.005]", "Longitude[-5.50:-5.00 by = 0.005]")
+)
+
+m1b_pred %>%
+  tibble()%>%
+  mutate(
+    group = group %>% as.character() %>% as.numeric()) %>%
+ggplot(
+  aes(x = group, y = x, fill = predicted))+
+  geom_tile()+
+  labs(
+    x = "Lon",
+    y = "Lat"
+  )+
+  scale_fill_continuous(
+    palette = "viridis"
+  )+
+  coord_equal()+
+  theme_classic()
+
+#indv fixed effects for morhua
+##distance from mud edge
+m1b_pred1 <- predict_response(
+  m1b, 
+  terms = c("mud.dist.edge")
+)
+
+plot(m1b_pred1)%>%
+  print
+
+##Distance from sand edge
+m1b_pred2 <- predict_response(
+  m1b, 
+  terms = c("sand.dist.edge")
+)
+
+plot(m1b_pred2)%>%
+  print
+##Simpson
+m1b_pred3 <- predict_response(
+  m1b, 
+  terms = c("Simpson")
+)
+
+plot(m1b_pred3)%>%
+  print
+##TRI
+m1b_pred4 <- predict_response(
+  m1b, 
+  terms = c("tri")
+)
+
+plot(m1b_pred4)%>%
+  print
+
+##Mean_velocity
+m1b_pred5 <- predict_response(
+  m1b, 
+  terms = c("mean_velocity")
+)
+
+plot(m1b_pred5)%>%
+  print
+##Algae 
+m1b_pred6 <- predict_response(
+  m1b, 
+  terms = c("Algae")
+)
+
+plot(m1b_pred6)%>%
+  print
+##Gravel
+m1b_pred7 <- predict_response(
+  m1b, 
+  terms = c("Gravel")
+)
+
+plot(m1b_pred7)%>%
+  print
+##Sand
+m1b_pred8 <- predict_response(
+  m1b, 
+  terms = c("Sand")
+)
+
+plot(m1b_pred8)%>%
+  print
+##Pebble
+m1b_pred9 <- predict_response(
+  m1b, 
+  terms = c("Pebble")
+)
+
+plot(m1b_pred9)%>%
+  print
+#merlangus
+
+plot(m7c, pages = 1)
+
+min(dat_mer$Longitude)
+
+m7c_pred <- predict_response(
+  m7c, 
+  terms = c("Latitude[55.4:55.6 by = 0.005]", "Longitude[-5.40:-5.00 by = 0.005]")
+)
+
+m7c_pred %>%
+  tibble()%>%
+  mutate(
+    group = group %>% as.character() %>% as.numeric()) %>%
+ggplot(
+  aes(x = group, y = x, fill = predicted))+
+  geom_tile()+
+  labs(
+    x = "Lon",
+    y = "Lat"
+  )+
+  scale_fill_continuous(
+    palette = "viridis"
+  )+
+  coord_equal()+
+  theme_classic()
+
+#indv fixed effects for merlangus
+##distance from mud edge
+m7c_pred1 <- predict_response(
+  m7c, 
+  terms = c("mud.dist.edge")
+)
+
+plot(m7c_pred1)%>%
+  print
+
+##distance from sand edge
+m7c_pred2 <- predict_response(
+  m7c, 
+  terms = c("sand.dist.edge")
+)
+
+plot(m7c_pred2)%>%
+  print
+
+##distance from algae edge
+m7c_pred3 <- predict_response(
+  m7c, 
+  terms = c("algae.dist.edge")
+)
+
+plot(m7c_pred3)%>%
+  print
+##distance from pebble edge
+m7c_pred4 <- predict_response(
+  m7c, 
+  terms = c("pebble.dist.edge")
+)
+
+plot(m7c_pred4)%>%
+  print
+
+##distance from gravel edge
+m7c_pred5 <- predict_response(
+  m7c, 
+  terms = c("gravel.dist.edge")
+)
+
+plot(m7c_pred5)%>%
+  print
+##Mud
+m7c_pred6 <- predict_response(
+  m7c, 
+  terms = c("Mud")
+)
+
+plot(m7c_pred6)%>%
+  print
+##Algae
+m7c_pred7 <- predict_response(
+  m7c, 
+  terms = c("Algae")
+)
+
+plot(m7c_pred7)%>%
+  print
+##Pebble
+m7c_pred8 <- predict_response(
+  m7c, 
+  terms = c("Pebble")
+)
+
+plot(m7c_pred8)%>%
+  print
+##Sand
+m7c_pred9 <- predict_response(
+  m7c, 
+  terms = c("Sand")
+)
+
+plot(m7c_pred9)%>%
+  print
+##Gravel
+m7c_pred10 <- predict_response(
+  m7c, 
+  terms = c("Gravel")
+)
+
+plot(m7c_pred10)%>%
+  print
+##Simpson
+m7c_pred11 <- predict_response(
+  m7c, 
+  terms = c("Simpson")
+)
+
+plot(m7c_pred11)%>%
+  print
+##TRI
+m7c_pred12 <- predict_response(
+  m7c, 
+  terms = c("tri")
+)
+
+plot(m7c_pred12)%>%
+  print
+##Depth
+m7c_pred13 <- predict_response(
+  m7c, 
+  terms = c("Depth")
+)
+
+plot(m7c_pred13)%>%
+  print
+
+```
+
+## Conclusions
+
+**How do your results compare to those presented by Walker-Milne et al. (2025)? \[1 pt\]**
+
+When comparing my probability of juvenile presence predictions compared to the paper. For Mel. aeglefinus, I would say the algae cover, depth, and distance to shore looks similar in terms of the prediction graphs. However Simpson's Diveristy index and mean current velocity predictions are different compared to what the paper had found. Specifically in the shape of the predictions. However, my model found the same fixed factors to be equally important when compared to models with other fixed variables. For G. morhua, I had additional variables that were not included in the papers model like Pebble cover. A lot of the variables were different in terms of the prediction plots. While the shape of gravel cover was similar the intercept was clearly different. As well as for TRI the shape was very different compared to the paper's predictions based on their model. I would say differences in my results were most different from the paper's for Mer. merlangus results. Not only did I have more parameters but even for the same fixed effects our predicted response curves were very different from each other.
+
+**Provide summary statements about the quality of your analysis, including any potential limitations or caveats. \[1 pt\]**
+I would say a large limitation about my analysis is biological knowledge of these species. I know very little about fish so when I was adding parameters, its relevance to the life history of the juvenile fish were unknown to me. Thus, I was able to create models with several parameters like m7c. Another limitation is the data itself, I wish there was abundance data rather than just presence absence data. I felt like I could do more with the data if I had abundance information. Also, I choose to not use the same packages as the paper did for their models, thus there could be differences in just using different packages in our analyses. 
+
+## AI statement
+
+*If you used AI for this assignment, please describe your use, including:*
+
+*1.  What tool or service did you use?*
+n/a
+
+*2.  What was the specific purpose or use?*
+n/a
+
+*3.  How did this use enhance your understanding of the topic/code?*
+n/a
